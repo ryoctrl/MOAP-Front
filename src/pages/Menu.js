@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { Grid } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import MenuCard from '../components/MenuCard';
 
 const API_HOST = process.env.REACT_APP_API_HOST;
 const MenuEndpoint = API_HOST + 'api/menues';
@@ -16,7 +19,6 @@ class Menu extends Component {
         fetch(MenuEndpoint)
             .then(res => res.json())
             .then((result) => {
-                console.log(result);
                 this.setState({
                     isLoaded: true,
                     menu: result
@@ -30,6 +32,7 @@ class Menu extends Component {
             });
     }
     render() {
+        const { classes } = this.props;
         const { error, isLoaded, menu } = this.state;
         if(error) {
             return <div> Error: {error.message}</div>
@@ -37,20 +40,24 @@ class Menu extends Component {
             return <div> Loading... </div>;
         } else {
             return (
-                <ul>
-                    {menu.map(item => (
-                        <li key={item.id}>
-                            {item.name} {item.price}
-
-                        </li>
-
-                    ))}
-
-                </ul>
+                <Grid container spacing={24}>
+                {menu.map(item => (
+                    <Grid item xs={6} lg={3} className={classes.card}>
+                        <MenuCard key={item.id} menu={item}/>
+                    </Grid>
+                ))}
+                </Grid>
             )
         }
     }
 }
 
-export default Menu;
+const styles = theme => ({
+    card: {
+        width: '100%',
+
+    }
+});
+
+export default withStyles(styles)(Menu);
 
