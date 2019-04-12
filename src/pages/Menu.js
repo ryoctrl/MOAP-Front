@@ -42,7 +42,7 @@ class Menu extends Component {
             return (
                 <Grid container spacing={24}>
                 {menu.map(item => (
-                    <Grid item xs={6} lg={3} className={classes.card}>
+                    <Grid key={item.id} item xs={6} lg={3} className={classes.card}>
                         <MenuCard key={item.id} menu={item}/>
                     </Grid>
                 ))}

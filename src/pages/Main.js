@@ -36,6 +36,9 @@ const styles = theme => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
     },
+    grow: {
+        flexGrow: 1
+    },
     content: {
         flexGrow: 1,
         padding: theme.spacing.unit * 3,
