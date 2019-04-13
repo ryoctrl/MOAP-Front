@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Card, CardActionArea, CardMedia, CardContent, Typography } from '@material-ui/core';
 import MenuModal from './MenuModal';
 
+const IMAGE_PATH = process.env.REACT_APP_API_HOST + 'images/';
 
 class MenuCard extends Component {
     constructor() {
@@ -26,11 +27,13 @@ class MenuCard extends Component {
 
     render() {
         const { classes, menu } = this.props;
-        if(!menu.image) menu.image = '/img/no-image.svg';
+        let img;
+        if(!menu.image) img = '/img/no-image.svg';
+        else img = IMAGE_PATH + menu.image;
         return (
             <Card key={menu.id}>
                 <CardActionArea onClick={() => this.handleOpen() }>
-                    <CardMedia className={classes.media}image={menu.image} title={menu.name}/>
+                    <CardMedia className={classes.media}image={img} title={menu.name}/>
                     <CardContent>
                         <Typography variant="subtitle1" component="h2">
                             {menu.name}
