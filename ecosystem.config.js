@@ -6,7 +6,8 @@ module.exports = {
           args: "start",
           env: {
               PORT: 9251,
-              REACT_APP_API_HOST: 'https://moap-api.mosin.jp/'
+              REACT_APP_API_HOST: 'https://moap-api.mosin.jp/',
+              REACT_APP_IMAGE_PATH: 'image/',
           }
       }
   ]
