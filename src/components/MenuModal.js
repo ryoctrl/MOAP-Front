@@ -31,13 +31,17 @@ class MenuModal extends Component {
                             単価: {menu.price}
                             合計金額: {menu.price * this.state.amount}
                         </DialogContentText>
-                            <TextField id="standard-number" 
-                                label="数量" 
-                                value={this.state.amount}
-                                onChange={e => this.changeAmount(e, menu, context)}
-                                type="number" className={classes.textField} 
-                                InputLabelProps={{shrink: true, }} 
-                                margin="normal"/>
+                        <TextField 
+                            id="standard-number" 
+                            label="数量" 
+                            value={this.state.amount}
+                            min={0}
+                            max={menu.stocks}
+                            onChange={e => this.changeAmount(e, menu, context)}
+                            type="number" 
+                            className={classes.textField} 
+                            InputLabelProps={{shrink: true, }} 
+                            margin="normal"/>
                     </DialogContent>
                 </Dialog>
             }
