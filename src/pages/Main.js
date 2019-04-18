@@ -4,6 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Menu from './Menu';
 import NavBar from '../components/NavBar';
 
+import { Provider } from 'react-redux';
+import CartStore from '../stores/Cart';
+
 const theme = createMuiTheme({
     typography: {
         useNextVariants: true,
@@ -15,12 +18,14 @@ class Main extends Component {
         const { classes } = this.props;
         return (
             <MuiThemeProvider theme={theme}>
-                <div className={classes.root}>
-                    <NavBar theme={theme} classes={classes} />
-                    <main className={classes.content}>
-                        <Menu />
-                    </main>
-                </div>
+                <Provider store={CartStore}>
+                    <div className={classes.root}>
+                        <NavBar theme={theme} classes={classes} />
+                        <main className={classes.content}>
+                            <Menu />
+                        </main>
+                    </div>
+                </Provider>
             </MuiThemeProvider>
         )
     }

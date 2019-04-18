@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { TextField, Dialog, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import CartContext from '../contexts/cart';
+import { connect } from 'react-redux';
+import { addCart } from '../stores/Cart';
 
 class MenuModal extends Component {
     constructor(props) {
@@ -11,43 +12,40 @@ class MenuModal extends Component {
         };
     }
 
-    changeAmount(e, menu, context) {
+    changeAmount(e, menu) {
         const amount = e.target.value;
-        context.addCart(menu, amount);
+        const action = addCart(menu, amount);
+        const res = this.props.dispatch(action);
         this.setState({
-            amount: context.getAmount(menu)
+            amount: res.amount
         });
     }
 
     render() {
-        const { classes, menu, open, onClose } = this.props;
+        const { classes, menu, open, onClose, cart } = this.props;
         return (
-            <CartContext.Consumer>
-            {context => 
-                <Dialog open={open} onClose={() => onClose()} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">{menu.name}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            単価: {menu.price}
-                            合計金額: {menu.price * this.state.amount}
-                        </DialogContentText>
-                        <TextField 
-                            id="standard-number" 
-                            label="数量" 
-                            value={this.state.amount}
-                            min={0}
-                            max={menu.stocks}
-                            onChange={e => this.changeAmount(e, menu, context)}
-                            type="number" 
-                            className={classes.textField} 
-                            InputLabelProps={{shrink: true, }} 
-                            margin="normal"/>
-                    </DialogContent>
-                </Dialog>
-            }
-            </CartContext.Consumer>
-        )
-    }
+            <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">{menu.name}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        単価: {menu.price}
+                        合計金額: {menu.price * this.state.amount}
+                    </DialogContentText>
+                    <TextField 
+                        id="standard-number" 
+                        label="数量" 
+                        value={this.state.amount}
+                        min={0}
+                        max={menu.stocks}
+                        onChange={e => this.changeAmount(e, menu)}
+                        type="number" 
+                        className={classes.textField} 
+                        InputLabelProps={{shrink: true, }} 
+                        margin="normal"/>
+                </DialogContent>
+            </Dialog>
+        );
+   }
 }
 
 const styles = theme => ({
@@ -58,4 +56,12 @@ const styles = theme => ({
     }
 });
 
-export default withStyles(styles)(MenuModal);
+
+/*
+MenuModal = connect(s => s)(MenuModal);
+MenuModal = withStyles(styles)(MenuModal);
+
+export default MenuModal;
+*/
+
+export default withStyles(styles)(connect(s => s)(MenuModal));
