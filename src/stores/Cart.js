@@ -21,7 +21,7 @@ function addReduce(state, action) {
         cart: newCart
     };
     const item = action.item;
-    const amount = action.amount;
+    const amount = Number(action.amount);
 
     if(!validate(item, amount)) {
         return newObj;
