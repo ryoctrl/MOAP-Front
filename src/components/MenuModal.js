@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { TextField, Dialog, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { 
+    Button, 
+    TextField, 
+    Typography, 
+    Dialog, 
+    DialogContent, 
+    DialogContentText, 
+    DialogTitle 
+} from '@material-ui/core';
 import { connect } from 'react-redux';
-import { addCart } from '../stores/Cart';
+import { 
+    addCart,
+    subCart
+} from '../stores/actions';
 
 class MenuModal extends Component {
     constructor(props) {
@@ -12,6 +24,7 @@ class MenuModal extends Component {
         };
     }
 
+        /*
     changeAmount(e, menu) {
         const amount = e.target.value;
         const action = addCart(menu, amount);
@@ -20,9 +33,12 @@ class MenuModal extends Component {
             amount: res.amount
         });
     }
+    */
 
     render() {
-        const { classes, menu, open, onClose, cart } = this.props;
+        const { classes, dispatch, open, onClose, cart } = this.props;
+        const menu = cart.selecting;
+        const cartMenu = (cart.list.filter(cm => cm.id === menu.id))[0] || {amount: 0};
         return (
             <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">{menu.name}</DialogTitle>
@@ -31,17 +47,13 @@ class MenuModal extends Component {
                         単価: {menu.price}
                         合計金額: {menu.price * this.state.amount}
                     </DialogContentText>
-                    <TextField 
-                        id="standard-number" 
-                        label="数量" 
-                        value={this.state.amount}
-                        min={0}
-                        max={menu.stocks}
-                        onChange={e => this.changeAmount(e, menu)}
-                        type="number" 
-                        className={classes.textField} 
-                        InputLabelProps={{shrink: true, }} 
-                        margin="normal"/>
+                    <Button onClick={() => dispatch(subCart(menu))}>
+                        <KeyboardArrowLeft />
+                    </Button>
+                    {cartMenu.amount}
+                    <Button onClick={() => dispatch(addCart(menu))}>
+                        <KeyboardArrowRight />
+                    </Button>
                 </DialogContent>
             </Dialog>
         );
@@ -57,11 +69,6 @@ const styles = theme => ({
 });
 
 
-/*
 MenuModal = connect(s => s)(MenuModal);
 MenuModal = withStyles(styles)(MenuModal);
-
 export default MenuModal;
-*/
-
-export default withStyles(styles)(connect(s => s)(MenuModal));

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
 import Menu from './Menu';
 import NavBar from '../components/NavBar';
 
 import { Provider } from 'react-redux';
-import CartStore from '../stores/Cart';
+import configureStore from '../stores/store';
+
+import { fetchMenus } from '../stores/actions';
 
 const theme = createMuiTheme({
     typography: {
@@ -14,18 +17,20 @@ const theme = createMuiTheme({
 });
 
 class Main extends Component {
+    constructor(props) {
+        super(props);
+        this.props.dispatch(fetchMenus());
+    }
     render() {
         const { classes } = this.props;
         return (
             <MuiThemeProvider theme={theme}>
-                <Provider store={CartStore}>
-                    <div className={classes.root}>
-                        <NavBar theme={theme} classes={classes} />
-                        <main className={classes.content}>
-                            <Menu />
-                        </main>
-                    </div>
-                </Provider>
+                <div className={classes.root}>
+                    <NavBar theme={theme} classes={classes} />
+                    <main className={classes.content}>
+                        <Menu />
+                    </main>
+                </div>
             </MuiThemeProvider>
         )
     }
@@ -55,4 +60,5 @@ const styles = theme => ({
     },
 });
 
+Main = connect()(Main);
 export default withStyles(styles, { withTheme: true })(Main);
