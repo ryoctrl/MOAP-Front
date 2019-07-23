@@ -62,7 +62,6 @@ function* orderFlow() {
     while(true) {
         yield take(postOrder);
         const cart = yield select(state => state.cart.list);
-        console.log(cart);
         const { data, error } = yield call(postOrderRequest, cart);
         if(data && !error) {
             yield put(successPostOrder({data}));
