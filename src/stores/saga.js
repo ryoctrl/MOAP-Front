@@ -7,12 +7,16 @@ import {
     failureFetchMenus,
     postOrder,
     successPostOrder,
-    failurePostOrder
+    failurePostOrder,
+    performPayment,
+    successPerformPayment,
+    failurePerformPayment,
 } from './actions';
 
 import {
     fetchMenusRequest,
-    postOrderRequest
+    postOrderRequest,
+    confirmPaymentRequest
 } from './api';
 
 const API_HOST = process.env.REACT_APP_API_HOST;
@@ -58,13 +62,25 @@ function* menuFlow() {
     }
 }
 
+function* paymentFlow(orderData) {
+    yield put(successPostOrder({data: orderData}));
+    const { payload }  = yield take(performPayment);
+    const { data, error } = yield call(confirmPaymentRequest, payload);
+    console.log(data);
+    if(data && !error) {
+        yield put(successPerformPayment({data}));
+    } else {
+        yield put(failurePerformPayment({error}));
+    }
+}
+
 function* orderFlow() {
     while(true) {
         yield take(postOrder);
         const cart = yield select(state => state.cart.list);
         const { data, error } = yield call(postOrderRequest, cart);
         if(data && !error) {
-            yield put(successPostOrder({data}));
+            yield fork(paymentFlow, data);
         } else {
             yield put(failurePostOrder({error}));
         }

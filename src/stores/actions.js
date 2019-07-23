@@ -14,6 +14,14 @@ export const subCart = createAction(SUB_CART);
 export const openCart = createAction(OPEN_CART);
 export const closeCart = createAction(CLOSE_CART);
 
+export const PERFORM_PAYMENT = 'PERFORM_PAYMENT';
+export const SUCCESS_PERFORM_PAYMENT = 'SUCCESS_PERFORM_PAYMENT';
+export const FAILURE_PERFORM_PAYMENT = 'FAILURE_PERFORM_PAYMENT';
+
+export const performPayment = createAction(PERFORM_PAYMENT);
+export const successPerformPayment = createAction(SUCCESS_PERFORM_PAYMENT);
+export const failurePerformPayment = createAction(FAILURE_PERFORM_PAYMENT);
+
 export const FETCH_MENUS = 'FETCH_MENUS';
 export const SUCCESS_FETCH_MENUS = 'SUCCESS_FETCH_MENUS';
 export const FAILURE_FETCH_MENUS = 'FAILURE_FETCH_MENUS';
