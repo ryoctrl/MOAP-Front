@@ -5,9 +5,12 @@ import {
     subCart,
     selectMenu,
     successPostOrder,
+    openCart,
+    closeCart,
 } from '../actions';
 
 const initialState = {
+    isOpen: false,
     list: [],
     selecting: {id: -1}
 };
@@ -51,6 +54,16 @@ export default createReducer({
     [clearCart]: (state, payload) => {
         const newState = Object.assign({}, state);
         newState.list = [];
+        return newState;
+    },
+    [openCart]: (state, payload) => {
+        const newState = Object.assign({}, state);
+        newState.isOpen = true;
+        return newState;
+    },
+    [closeCart]: (state, payload) => {
+        const newState = Object.assign({}, state);
+        newState.isOpen = false;
         return newState;
     }
 }, initialState);

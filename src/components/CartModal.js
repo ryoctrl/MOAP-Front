@@ -3,7 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { Button, Typography, Dialog, DialogContent, DialogTitle, Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 import { connect } from 'react-redux';
 import {
-    postOrder
+    postOrder,
+    closeCart,
 } from '../stores/actions';
 
 const API_HOST = process.env.REACT_APP_API_HOST;
@@ -24,7 +25,7 @@ class CartModal extends Component {
     }
 
     render() {
-        const { classes, open, onClose, cart, menu } = this.props;
+        const { classes, open, onClose, dispatch, cart, menu } = this.props;
         const cartList = cart.list.map(cartMenu => {
             const cartMenuObj = menu.list.filter(m => m.id === cartMenu.id);
             return Object.assign({}, cartMenu, cartMenuObj[0]);
@@ -32,7 +33,7 @@ class CartModal extends Component {
         this.cart = cart;
 
         return (
-            <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" className={classes.dialog}>
+            <Dialog open={cart.isOpen} onClose={() => dispatch(closeCart())} aria-labelledby="form-dialog-title" className={classes.dialog}>
                 <DialogTitle id="form-dialog-title">ShoppingCart</DialogTitle>
                 <List>
                     {cartList.length === 0 && <Typography>商品をカートに入れてください</Typography>}

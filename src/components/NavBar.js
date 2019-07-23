@@ -1,30 +1,19 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
 import { ShoppingCart } from '@material-ui/icons';
+import {
+    openCart
+} from '../stores/actions';
 import CartModal from './CartModal';
 
 class NavBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-            cartOpen: false,
-        }
-    }
-
     openCart() {
-        this.setState({
-            cartOpen: true,
-        });
-    }
-
-    closeCart() {
-        this.setState({
-            cartOpen: false
-        });
+        this.props.dispatch(openCart());
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, dispatch } = this.props;
 
         return (
             <div>
@@ -33,16 +22,16 @@ class NavBar extends Component {
                         <Typography variant="h6" color="inherit" className={classes.grow}>
                             MOAP
                         </Typography>
-                        <Button onClick={() => this.openCart()} color="inherit">
+                        <Button onClick={this.openCart.bind(this)} color="inherit">
                             <ShoppingCart/>
                         </Button>
                     </Toolbar>
                 </AppBar>
-                <CartModal classes={classes} open={this.state.cartOpen} onClose={() => this.closeCart()}/>
+                <CartModal classes={classes}/>
             </div>
         );
     }
 }
 
-export default NavBar;
+export default connect(states => states)(NavBar);
 
