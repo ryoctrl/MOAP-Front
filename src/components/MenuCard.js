@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
 import { Card, CardActionArea, CardMedia, CardContent, Typography } from '@material-ui/core';
 import MenuModal from './MenuModal';
+
+import { selectMenu } from '../stores/actions';
 
 const IMAGE_PATH = process.env.REACT_APP_API_HOST + 'images/';
 
@@ -14,6 +17,8 @@ class MenuCard extends Component {
     }
 
     handleOpen = () => {
+        const { dispatch, menu } = this.props;
+        dispatch(selectMenu(menu));
         this.setState({
             open: true,
         });
@@ -57,4 +62,5 @@ const styles = theme => ({
     },
 });
 
+MenuCard = connect()(MenuCard);
 export default withStyles(styles)(MenuCard);
