@@ -37,4 +37,3 @@ export const FAILURE_POST_ORDER = 'FAILURE_POST_ORDER';
 export const postOrder = createAction(POST_ORDER);
 export const successPostOrder = createAction(SUCCESS_POST_ORDER);
 export const failurePostOrder = createAction(FAILURE_POST_ORDER);
-
