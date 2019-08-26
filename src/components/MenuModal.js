@@ -17,43 +17,34 @@ import {
 } from '../stores/actions';
 
 class MenuModal extends Component {
-    constructor(props) {
-        super();
-        this.state = {
-            amount: 0
-        };
-    }
-
-        /*
-    changeAmount(e, menu) {
-        const amount = e.target.value;
-        const action = addCart(menu, amount);
-        const res = this.props.dispatch(action);
-        this.setState({
-            amount: res.amount
-        });
-    }
-    */
-
     render() {
         const { classes, dispatch, open, onClose, cart } = this.props;
         const menu = cart.selecting;
         const cartMenu = (cart.list.filter(cm => cm.id === menu.id))[0] || {amount: 0};
         return (
             <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">{menu.name}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        単価: {menu.price}
-                        合計金額: {menu.price * this.state.amount}
+                <DialogTitle>{menu.name}</DialogTitle>
+                <DialogContent className={classes.content}>
+                    <div className={classes.content}>
+                        <span className={classes.textTitle}>単価:</span>
+                        <span className={classes.text}>{menu.price}</span>
+                    </div>
+                    <DialogContentText className={classes.content}>
+                        {/*
+                            <div className={classes.content}>
+                            */}
+                        <span className={classes.textTitle}>合計金額:</span>
+                        <span className={classes.text}>{menu.price * cartMenu.amount}</span>
                     </DialogContentText>
-                    <Button onClick={() => dispatch(subCart(menu))}>
-                        <KeyboardArrowLeft />
-                    </Button>
-                    {cartMenu.amount}
-                    <Button onClick={() => dispatch(addCart(menu))}>
-                        <KeyboardArrowRight />
-                    </Button>
+                    <div className={classes.content}>
+                        <Button onClick={() => dispatch(subCart(menu))}>
+                            <KeyboardArrowLeft />
+                        </Button>
+                        {cartMenu.amount}
+                        <Button onClick={() => dispatch(addCart(menu))}>
+                            <KeyboardArrowRight />
+                        </Button>
+                    </div>
                 </DialogContent>
             </Dialog>
         );
@@ -65,6 +56,17 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
         width: 200,
+    },
+    content: {
+        alignItems: 'center',
+        textAlign: 'center'
+    },
+    textTitle: {
+        textAlign: 'left',
+    },
+    text: {
+        textAlign: 'center'
+
     }
 });
 
