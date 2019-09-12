@@ -5,14 +5,20 @@ import { SEX_TYPE } from '../../constants/user';
 import connectUser from '../../connectors/userConnector';
 
 class InitializeModal extends Component {
-    state = {
-        sex: SEX_TYPE.NONE,
-        privateKey: '',
+    constructor(props) {
+        super(props);
+        const { user } = this.props;
+        this.state = {
+            sex: user.sex,
+            privateKey: user.privateKey
+        };
     }
 
+    changeSex = ({target: { value: sex }}) => this.setState({sex})
     changePrivateKey = ({target: { value: privateKey }})=> this.setState({privateKey})
 
-    save = () => this.props.setUserInfo(...this.state)
+    save = () => this.props.setUserInfo(this.state.sex, this.state.privateKey)
+
 
     render() {
         const { user } = this.props;
@@ -22,7 +28,7 @@ class InitializeModal extends Component {
                 <DialogContent>
                     <RadioGroup 
                         name="gender"
-                        value={user.sex}
+                        value={this.state.sex}
                         onChange={this.changeSex}>
                         <FormControlLabel
                             value={SEX_TYPE.FEMALE}
@@ -31,9 +37,9 @@ class InitializeModal extends Component {
                             labelPlacement="start"
                             />
                         <FormControlLabel
-                            value={SEX_TYPE.FEMALE}
+                            value={SEX_TYPE.MALE}
                             control={<Radio color="primary"/>}
-                            label="女"
+                            label="男"
                             labelPlacement="start"
                             />
                     </RadioGroup>

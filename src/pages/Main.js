@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Menu from './Menu';
 import NavBar from '../components/NavBar';
+import InitializeModal from '../components/Modals/InitializeModal';
 
 import { Provider } from 'react-redux';
 import configureStore from '../stores/store';
@@ -28,6 +29,7 @@ class Main extends Component {
                 <div className={classes.root}>
                     <NavBar theme={theme} classes={classes} />
                     <main className={classes.content}>
+                        <InitializeModal />
                         <Menu />
                     </main>
                 </div>

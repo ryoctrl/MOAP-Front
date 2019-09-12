@@ -12,6 +12,7 @@ import {
     successPerformPayment,
     failurePerformPayment,
 } from './actions';
+import sendToken from '../libs/nem';
 
 import {
     fetchMenusRequest,
@@ -65,6 +66,8 @@ function* menuFlow() {
 function* paymentFlow(orderData) {
     yield put(successPostOrder({data: orderData}));
     const { payload }  = yield take(performPayment);
+    console.log('payload is below');
+    console.log(payload);
     const { data, error } = yield call(confirmPaymentRequest, payload);
     console.log(data);
     if(data && !error) {
