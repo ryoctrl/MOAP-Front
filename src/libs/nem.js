@@ -46,7 +46,7 @@ export default (amount, privateKey) => {
     );
 
     const sender = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
-    const signedTransaction = sender.sign(transaction, NETWORK_HASH);
+    const signedTransaction = sender.sign(transaction, NETWORK_GENERATION_HASH);
 
     host.announce(signedTransaction)
         .subscribe(console.log, console.error);
