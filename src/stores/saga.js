@@ -68,6 +68,11 @@ function* paymentFlow(orderData) {
     const { payload }  = yield take(performPayment);
     console.log('payload is below');
     console.log(payload);
+    const user = yield select(state => state.user);
+    const { data: paymentResult, error: paymentError } = yield call(sendToken, payload.total_price, user.privateKey);
+    console.log('nem paymented!');
+    console.log(paymentResult);
+    console.log(paymentError);
     const { data, error } = yield call(confirmPaymentRequest, payload);
     console.log(data);
     if(data && !error) {
