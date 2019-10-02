@@ -4,6 +4,7 @@ import {
     successPostOrder,
     successPerformPayment,
     failurePerformPayment,
+    resetOrder,
 } from '../actions';
 import ORDER_TYPES from '../../constants/orderType';
 
@@ -31,6 +32,9 @@ export default createReducer({
         newState.orderState = ORDER_TYPES.PAYMENT;
         return newState;
     },
+    [resetOrder]: (state, payload) => {
+        return initialState;
+    }
 }, initialState);
 
 

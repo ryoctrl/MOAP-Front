@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import {
     postOrder,
     closeCart,
-    performPayment
+    performPayment,
+    resetOrder
 } from '../stores/actions';
 
 import DateHelper from '../helpers/DateHelper';
@@ -19,6 +20,7 @@ const IMAGE_PATH = API_HOST + 'images/';
 class CartModal extends Component {
     closeModal() {
         this.props.dispatch(closeCart());
+        this.props.dispatch(resetOrder());
     }
 
     submitOrder() {
@@ -34,13 +36,13 @@ class CartModal extends Component {
         const { order } = this.props;
         switch(order.orderState) {
             case ORDER_TYPES.ORDER:
-                return 'ShoppingCart';
+                return 'カート';
             case ORDER_TYPES.PAYMENT:
-                return 'Payment';
+                return '支払い';
             case ORDER_TYPES.PAYMENTED:
                 return 'Thank you!';
             default:
-                return 'ShoppingCart';
+                return 'カート';
         }
     }
 
@@ -146,9 +148,55 @@ class CartModal extends Component {
         const handedTime = new DateHelper().getAfter('minutes', requiredMinute);
         return (
             <div>
-                <Typography className={classes.center}>{requiredMinutes}分後に完成予定です！</Typography>
-                <Typography className={classes.center}>{handedTime}を目安に受け取りに来てください!</Typography>
-                <Typography className={classes.center}>注文ID: {order.order.id}</Typography>
+                <Typography 
+                    className={classes.center}>
+                    ご利用ありがとうございました。
+                </Typography>
+                <div className={classes.row}>
+                    <DialogContentText 
+                        align='left'
+                        noWrap={true}
+                        className={classes.rowTitle}>
+                        受渡可能時刻
+                    </DialogContentText>
+                    <Typography 
+                        align='right' 
+                        className={classes.rowContent}>
+                        {handedTime}
+                    </Typography>
+                </div>
+
+                <div className={classes.row}>
+                    <DialogContentText 
+                        align='left'
+                        noWrap={true}
+                        className={classes.rowTitle}>
+                        所要時間
+                    </DialogContentText>
+                    <Typography 
+                        align='right' 
+                        className={classes.rowContent}>
+                        {requiredMinutes}分
+                    </Typography>
+                </div>
+                <div className={classes.row}>
+                    <DialogContentText 
+                        align='left'
+                        noWrap={true}
+                        className={classes.rowTitle}>
+                        注文ID
+                    </DialogContentText>
+                    <Typography 
+                        align='right' 
+                        className={classes.rowContent}>
+                        {order.order.id}
+                    </Typography>
+                </div>
+
+                <Typography>
+                    受取時には学生証をお持ちください。
+                </Typography>
+
                 <Button 
                     onClick={this.closeModal.bind(this)} 
                     className={classes.fullWidth}>

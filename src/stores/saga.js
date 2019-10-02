@@ -11,6 +11,7 @@ import {
     performPayment,
     successPerformPayment,
     failurePerformPayment,
+    resetOrder,
 } from './actions';
 import sendToken from '../libs/nem';
 

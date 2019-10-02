@@ -47,8 +47,8 @@ export default createReducer({
     },
     [successPostOrder]: (state, payload) => {
         const newState = Object.assign({}, state);
-        newState.list = [];
-        newState.selecting = {id: -1}
+        //newState.list = [];
+        //newState.selecting = {id: -1}
         return newState;
     },
     [clearCart]: (state, payload) => {
