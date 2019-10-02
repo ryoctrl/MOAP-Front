@@ -22,36 +22,51 @@ class MenuModal extends Component {
         const menu = cart.selecting;
         const cartMenu = (cart.list.filter(cm => cm.id === menu.id))[0] || {amount: 0};
         return (
-            <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-                <DialogTitle>{menu.name}</DialogTitle>
-                <DialogContent className={classes.content}>
-                    <div className={classes.content}>
-                        <span className={classes.textTitle}>単価:</span>
-                        <span className={classes.text}>{menu.price}</span>
-                    </div>
-                    <DialogContentText className={classes.content}>
-                        {/*
-                            <div className={classes.content}>
-                            */}
-                        <span className={classes.textTitle}>合計金額:</span>
-                        <span className={classes.text}>{menu.price * cartMenu.amount}</span>
-                    </DialogContentText>
-                    <div className={classes.content}>
-                        <Button onClick={() => dispatch(subCart(menu))}>
-                            <KeyboardArrowLeft />
-                        </Button>
-                        {cartMenu.amount}
-                        <Button onClick={() => dispatch(addCart(menu))}>
-                            <KeyboardArrowRight />
-                        </Button>
-                    </div>
-                </DialogContent>
+            <Dialog 
+                open={open} 
+                onClose={onClose} 
+                className={classes.dialog}
+                aria-labelledby="form-dialog-title">
+                <div className={classes.dialogCard}>
+                    <DialogTitle>{menu.name}</DialogTitle>
+                    <DialogContent className={classes.content}>
+                        <div className={classes.content}>
+                            <span className={classes.textTitle}>単価:</span>
+                            <span className={classes.text}>{menu.price}</span>
+                        </div>
+                        <DialogContentText className={classes.content}>
+                            {/*
+                                <div className={classes.content}>
+                                */}
+                            <span className={classes.textTitle}>合計金額:</span>
+                            <span className={classes.text}>{menu.price * cartMenu.amount}</span>
+                        </DialogContentText>
+                        <div className={classes.content}>
+                            <Button onClick={() => dispatch(subCart(menu))}>
+                                <KeyboardArrowLeft />
+                            </Button>
+                            {cartMenu.amount}
+                            <Button onClick={() => dispatch(addCart(menu))}>
+                                <KeyboardArrowRight />
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </div>
             </Dialog>
         );
    }
 }
 
 const styles = theme => ({
+    dialogCard: {
+        [theme.breakpoints.down('md')]: {
+            minWidth: '50vw'
+        },
+        [theme.breakpoints.up('md')]: {
+            minWidth: '25vw'
+        },
+        flex: 1,
+    },
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,

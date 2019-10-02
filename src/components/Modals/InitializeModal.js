@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, DialogContentText, TextField, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 
 import { SEX_TYPE } from '../../constants/user';
@@ -21,12 +22,13 @@ class InitializeModal extends Component {
 
 
     render() {
-        const { user } = this.props;
+        const { classes, user } = this.props;
         return (
             <Dialog open={!user.initialized}>
                 <DialogTitle>初期設定</DialogTitle>
                 <DialogContent>
                     <RadioGroup 
+                        className={classes.gender}
                         name="gender"
                         value={this.state.sex}
                         onChange={this.changeSex}>
@@ -61,4 +63,12 @@ class InitializeModal extends Component {
     }
 }
 
+const styles = theme => ({
+    gender: {
+        display: 'flex',
+        flexDirection: 'row'
+    }
+});
+
+InitializeModal = withStyles(styles)(InitializeModal);
 export default connectUser(InitializeModal);

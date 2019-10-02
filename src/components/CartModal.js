@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Button, Typography, Dialog, DialogContent, DialogTitle, Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Button, Typography, Dialog, DialogContent, DialogContentText, DialogTitle, Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 import { connect } from 'react-redux';
 import {
     postOrder,
@@ -51,10 +51,12 @@ class CartModal extends Component {
             return Object.assign({}, cartMenu, cartMenuObj[0]);
         });
 
+        const isEmpty = cartList.length === 0;
+
         return (
             <div>
-                <List>
-                    {cartList.length === 0 && <Typography>商品をカートに入れてください</Typography>}
+                { isEmpty && <Typography className={classes.center}>商品をカートに入れてください</Typography>}
+                <List className={classes.fullWidth}>
                     { cartList.map(item => {
                         let img;
                         if(!item.image) img = '/img/no-image.svg';
@@ -64,25 +66,73 @@ class CartModal extends Component {
                                 <ListItemAvatar>
                                     <Avatar alt={item.name} src={img} className={classes.avatar}/>
                                 </ListItemAvatar>
-                                <ListItemText primary={item.name} secondary={item.amount} />
+                                <ListItemText 
+                                    primary={item.name} 
+                                    secondary={item.amount} />
                             </ListItem>
                         )
                     })}
                 </List>
-                <Button onClick={this.submitOrder.bind(this)}  className={classes.button}>
-                    Order
+                <Button 
+                    onClick={this.submitOrder.bind(this)}  
+                    className={classes.fullWidth}
+                    disabled={isEmpty}>
+                    決済画面へ
                 </Button>
             </div>
         )
     }
 
     renderPaymentContent() {
-        const { classes, order } = this.props;
+        const { classes, order: { order: { total_price: totalPrice} }} = this.props;
+        const remain = 1200;
+        const afterRemain = remain - totalPrice;
+        const canPayment = afterRemain >= 0;
         return (
             <div>
-                <Typography>{order.order.total_price}</Typography>
-                <Button onClick={this.performPayment.bind(this)} className={classes.button}>
-                    Payment
+                <div className={classes.row}>
+                    <DialogContentText 
+                        align='left'
+                        className={classes.rowTitle}>
+                          合計  
+                    </DialogContentText>
+                    <Typography 
+                        align='right' 
+                        className={classes.rowContent}>
+                        {totalPrice}円
+                    </Typography>
+                </div>
+                <div className={classes.row}>
+                    <DialogContentText 
+                        align='left'
+                        className={classes.rowTitle}>
+                          残高  
+                    </DialogContentText>
+                    <Typography 
+                        align='right' 
+                        className={classes.rowContent}>
+                        1200円
+                    </Typography>
+                </div>
+                <hr></hr>
+                <div className={classes.row}>
+                    <DialogContentText 
+                        align='left'
+                        noWrap={true}
+                        className={classes.rowTitle}>
+                        決済後残高
+                    </DialogContentText>
+                    <Typography 
+                        align='right' 
+                        className={classes.rowContent}>
+                        { afterRemain } 円
+                    </Typography>
+                </div>
+                <Button 
+                    onClick={this.performPayment.bind(this)} 
+                    disabled={!canPayment}
+                    className={classes.fullWidth}>
+                    支払う
                 </Button>
             </div>
         )
@@ -96,10 +146,12 @@ class CartModal extends Component {
         const handedTime = new DateHelper().getAfter('minutes', requiredMinute);
         return (
             <div>
-                <Typography>{requiredMinutes}分後に完成予定です！</Typography>
-                <Typography>{handedTime}を目安に受け取りに来てください!</Typography>
-                <Typography>注文ID: {order.order.id}</Typography>
-                <Button onClick={this.closeModal.bind(this)} className={classes.button}>
+                <Typography className={classes.center}>{requiredMinutes}分後に完成予定です！</Typography>
+                <Typography className={classes.center}>{handedTime}を目安に受け取りに来てください!</Typography>
+                <Typography className={classes.center}>注文ID: {order.order.id}</Typography>
+                <Button 
+                    onClick={this.closeModal.bind(this)} 
+                    className={classes.fullWidth}>
                     Close
                 </Button>
             </div>
@@ -127,10 +179,13 @@ class CartModal extends Component {
             <Dialog 
                 open={cart.isOpen} 
                 onClose={this.closeModal.bind(this)} 
-                aria-labelledby="form-dialog-title" 
                 className={classes.dialog}>
-                <DialogTitle id="form-dialog-title">{this.getTitle()}</DialogTitle>
-                {this.renderContent()}
+                <div className={classes.dialogCard}>
+                    <DialogTitle className={classes.dialogTitle}>{this.getTitle()}</DialogTitle>
+                    <DialogContent>
+                        {this.renderContent()}
+                    </DialogContent>
+                </div>
             </Dialog>
         );
     }
@@ -145,8 +200,33 @@ const styles = theme => ({
     info: {
         lineHeight: '40px',
     },
-    button: {
-        marign: theme.spacing.unit,
+    dialogCard: {
+        [theme.breakpoints.down('md')]: {
+            minWidth: '50vw',
+        },
+        [theme.breakpoints.up('md')]: {
+            minWidth: '25vw'
+        },
+        flex: 1,
+    },
+    dialogTitle: {
+        textAlign: 'center',
+    },
+    center: {
+        textAlign: 'center',
+    },
+    fullWidth: {
+        width: '100%',
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row'
+    },
+    rowTitle: {
+        flexGrow: 1
+    },
+    rowContent: {
+        flexGrow: 1
     }
 });
 
