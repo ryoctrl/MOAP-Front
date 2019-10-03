@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Button, Divider, Drawer, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import { ShoppingCart } from '@material-ui/icons';
 import {
     openCart
@@ -13,7 +13,7 @@ class NavBar extends Component {
     }
 
     render() {
-        const { classes, dispatch } = this.props;
+        const { classes, user: { remainStr: remain }, dispatch } = this.props;
 
         return (
             <div>
@@ -22,11 +22,19 @@ class NavBar extends Component {
                         <Typography variant="h6" color="inherit" className={classes.grow}>
                             MOAP
                         </Typography>
+                        <Typography color="inherit">
+                            残高: {remain}
+                        </Typography>
                         <Button onClick={this.openCart.bind(this)} color="inherit">
                             <ShoppingCart/>
                         </Button>
                     </Toolbar>
                 </AppBar>
+                <Drawer>
+                    <Divider/>
+                    <MenuItem />
+                    <MenuItem />
+                </Drawer>
                 <CartModal classes={classes}/>
             </div>
         );

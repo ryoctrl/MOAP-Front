@@ -40,3 +40,10 @@ export const failurePostOrder = createAction(FAILURE_POST_ORDER);
 
 export const RESET_ORDER = 'RESET_ORDER';
 export const resetOrder = createAction(RESET_ORDER);
+
+//NEM Actions
+export const GET_NEM_REMAIN = 'GET_NEM_REMAIN';
+export const getNemRemain = createAction(GET_NEM_REMAIN);
+
+export const SET_REMAIN = 'SET_REMAIN';
+export const setRemain = createAction(SET_REMAIN);

@@ -2,8 +2,11 @@ import {
     Deadline,
     Address,
     Account,
+    AccountHttp,
     Mosaic,
+    MosaicHttp,
     MosaicId,
+    MosaicService,
     NetworkId,
     NetworkType,
     PlainMessage,
@@ -11,6 +14,8 @@ import {
     TransferTransaction,
     UInt64
 } from 'nem2-sdk';
+
+import { mergeMap } from 'rxjs/operators';
 
 /*
 const STORE_NEM_ADDR = 'SCYGUKCQAC73UNEBVNCGY6AP43WVOY3AFIFNGYU7';
@@ -30,6 +35,29 @@ const NETWORK_GENERATION_HASH = '249B14C178A3E7A2C8556EC3571FFAD4BAB2E71349FFD6E
 //const NEM_NODE_HOST = 'https://catapult-test.opening-line.jp:3001/';
 const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
 const host = new TransactionHttp(NEM_NODE_HOST);
+const accountHttp = new AccountHttp(NEM_NODE_HOST);
+const mosaicHttp = new MosaicHttp(NEM_NODE_HOST);
+const mosaicService = new MosaicService(accountHttp, mosaicHttp);
+const address = Address.createFromRawAddress(STORE_NEM_ADDR);
+
+export const getRemain = async (privateKey) => {
+    const { address } = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
+
+    return await new Promise((resolve, reject) => {
+        const parseInfo = info => {
+            let mosaic = info.mosaics.filter(mosaic => mosaic.id.id.toHex() === MOSAIC_ID);
+            if(mosaic.length === 0) {
+                console.log('dont have mosaic!');
+                resolve({remain: 0});
+            }
+            mosaic = mosaic[0];
+            const id = mosaic.id.id;
+            const amount = mosaic.amount;
+            resolve({remain: amount.compact()});
+        }
+        accountHttp.getAccountInfo(address).subscribe(parseInfo, err => reject({err}));
+    });
+};
 
 export default async (amount, privateKey) => {
     console.log(`sending ${amount} ${privateKey}`);

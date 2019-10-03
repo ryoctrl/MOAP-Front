@@ -12,8 +12,10 @@ import {
     successPerformPayment,
     failurePerformPayment,
     resetOrder,
+    getNemRemain,
+    setRemain,
 } from './actions';
-import sendToken from '../libs/nem';
+import sendToken, { getRemain }  from '../libs/nem';
 
 import {
     fetchMenusRequest,
@@ -81,6 +83,9 @@ function* paymentFlow(orderData) {
     } else {
         yield put(failurePerformPayment({error}));
     }
+
+    yield call(async () => new Promise(res => setInterval(res, 1000)));
+    yield put(getNemRemain());
 }
 
 function* orderFlow() {
@@ -96,8 +101,35 @@ function* orderFlow() {
     }
 }
 
+function* remainFlow() {
+    while(true) {
+        const user = yield select(state => state.user);
+        const { privateKey } = user;
+
+        if(!privateKey) {
+            yield call(async () => new Promise(res => setInterval(res, 1000)));
+            continue;
+        }
+
+
+        console.log('fetching nem remain!');
+        const { remain, err } = yield call(getRemain, privateKey);
+        if(remain && !err) {
+            yield put(setRemain({remain}));
+        } else {
+            yield put(setRemain({remain: err.toString}));
+        }
+        yield call(async () => new Promise(res => setInterval(res, 2000)));
+    }
+}
+
+function* nemInit() {
+    yield fork(remainFlow);
+}
+
 export default function* rootSaga() {
     yield fork(socketFlow);
     yield fork(menuFlow);
     yield fork(orderFlow);
+    yield fork(nemInit);
 }

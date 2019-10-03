@@ -10,6 +10,7 @@ import {
 } from '../stores/actions';
 
 import DateHelper from '../helpers/DateHelper';
+import { amountToStr } from '../helpers/AmountHelper';
 
 import ORDER_TYPES from '../constants/orderType';
 
@@ -86,8 +87,7 @@ class CartModal extends Component {
     }
 
     renderPaymentContent() {
-        const { classes, order: { order: { total_price: totalPrice} }} = this.props;
-        const remain = 1200;
+        const { classes, user: { remain, remainStr }, order: { order: { total_price: totalPrice} }} = this.props;
         const afterRemain = remain - totalPrice;
         const canPayment = afterRemain >= 0;
         return (
@@ -113,7 +113,7 @@ class CartModal extends Component {
                     <Typography 
                         align='right' 
                         className={classes.rowContent}>
-                        1200円
+                        {remainStr}円
                     </Typography>
                 </div>
                 <hr></hr>
@@ -127,7 +127,7 @@ class CartModal extends Component {
                     <Typography 
                         align='right' 
                         className={classes.rowContent}>
-                        { afterRemain } 円
+                        { amountToStr(afterRemain) } 円
                     </Typography>
                 </div>
                 <Button 
@@ -141,11 +141,15 @@ class CartModal extends Component {
     }
 
     renderPaymentedContent() {
-        const { classes, order } = this.props;
+        const { classes, order: { order, requiredMinute, handedTime }} = this.props;
+        /*
         const getRequiredMinutes = menuItem => menuItem.Menu.required_time * menuItem.amount;
         const requiredMinutes = order.order.OrderItems.map(getRequiredMinutes);
         const requiredMinute = Math.max(requiredMinutes);
         const handedTime = new DateHelper().getAfter('minutes', requiredMinute);
+        */
+        //const requiredMinute = order
+        //const handedTime = order.handedTime;
         return (
             <div>
                 <Typography 
@@ -176,7 +180,7 @@ class CartModal extends Component {
                     <Typography 
                         align='right' 
                         className={classes.rowContent}>
-                        {requiredMinutes}分
+                        {requiredMinute}分
                     </Typography>
                 </div>
                 <div className={classes.row}>
@@ -189,7 +193,7 @@ class CartModal extends Component {
                     <Typography 
                         align='right' 
                         className={classes.rowContent}>
-                        {order.order.id}
+                        {order.id}
                     </Typography>
                 </div>
 

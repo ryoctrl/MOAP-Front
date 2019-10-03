@@ -7,10 +7,13 @@ import {
     resetOrder,
 } from '../actions';
 import ORDER_TYPES from '../../constants/orderType';
+import DateHelper from '../../helpers/DateHelper';
 
 const initialState = {
     orderStage: ORDER_TYPES.ORDER,
     order: null,
+    handedTime: null,
+    requiredMinute: null,
     isPaymented: false,
 };
 
@@ -21,6 +24,11 @@ export default createReducer({
     [successPerformPayment]: (state, payload) => {
         const newState = Object.assign({}, state);
         newState.orderState = ORDER_TYPES.PAYMENTED;
+        const getRequiredMinutes = menuItem => menuItem.Menu.required_time;
+        const requiredMinutes = newState.order.OrderItems.map(getRequiredMinutes);
+        const requiredMinute = Math.max(requiredMinutes);
+        newState.requiredMinute = requiredMinute;
+        newState.handedTime = new DateHelper().getAfter('minutes', requiredMinute);
         return newState;
     },
     [failurePerformPayment]: (state, payload) => {
