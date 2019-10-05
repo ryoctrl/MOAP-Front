@@ -7,15 +7,13 @@ import {
     MosaicHttp,
     MosaicId,
     MosaicService,
-    NetworkId,
     NetworkType,
-    PlainMessage,
+    EncryptedMessage,
+    PublicAccount,
     TransactionHttp,
     TransferTransaction,
     UInt64
 } from 'nem2-sdk';
-
-import { mergeMap } from 'rxjs/operators';
 
 /*
 const STORE_NEM_ADDR = 'SCYGUKCQAC73UNEBVNCGY6AP43WVOY3AFIFNGYU7';
@@ -27,6 +25,7 @@ const host = new TransactionHttp(NEM_NODE_HOST);
 
 //店舗のNEMアドレス(売上の受取)
 const STORE_NEM_ADDR = 'SCXQVSLDPTOP7OBS7EW454ZQQTXJRTV7V3MQGAYA';
+const STORE_NEM_PUB_KEY = '2DFD4CA13807CD2DF597CCCA83BCF6E66D8D06711E3AFDA58DCD1FDA95129EB5';
 //moapで使用するMOSAICのID
 const MOSAIC_ID = '2bb09db8269361d6';
 //使用するnem chainのnetwork_generation_hash
@@ -37,7 +36,6 @@ const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
 const host = new TransactionHttp(NEM_NODE_HOST);
 const accountHttp = new AccountHttp(NEM_NODE_HOST);
 const mosaicHttp = new MosaicHttp(NEM_NODE_HOST);
-const mosaicService = new MosaicService(accountHttp, mosaicHttp);
 const address = Address.createFromRawAddress(STORE_NEM_ADDR);
 
 export const getRemain = async (privateKey) => {
@@ -59,8 +57,7 @@ export const getRemain = async (privateKey) => {
     });
 };
 
-export default async (amount, privateKey) => {
-    console.log(`sending ${amount} ${privateKey}`);
+export default async (amount, message, privateKey) => {
     const transaction = TransferTransaction.create(
         Deadline.create(),
         Address.createFromRawAddress(STORE_NEM_ADDR),
@@ -70,7 +67,7 @@ export default async (amount, privateKey) => {
                 UInt64.fromUint(amount)
             )
         ],
-        PlainMessage.create('send from moap'),
+        EncryptedMessage.create(message, PublicAccount.createFromPublicKey(STORE_NEM_PUB_KEY, NetworkType.MIJIN_TEST), privateKey, NetworkType.MIJIN_TEST),
         NetworkType.MIJIN_TEST
     );
 
@@ -78,18 +75,18 @@ export default async (amount, privateKey) => {
     const signedTransaction = sender.sign(transaction, NETWORK_GENERATION_HASH);
 
     const res = await new Promise((resolve, reject) => {
-        console.log('announcing transaction!');
         const succeeded = transactions => resolve(transactions);
         const failured = err => reject(err);
         host.announce(signedTransaction).subscribe(succeeded, failured);
-    }).catch(err => console.error(err));
-    console.log('announced!');
-    console.log(res);
-    return { data: true };
+    }).catch(err => ({isError: true, error: err}));
+
+    await new Promise(res => setTimeout(res, 2000));
+    await new Promise((resolve, reject) => {
+        console.log('checking transaction');
+        host.getTransactionStatus(signedTransaction.hash).subscribe(success => resolve(console.log(success)), err => reject(console.error(err)));
+    });
+
+    console.log('returning result');
+    if(res.isError) return { error: res.error };
+    return { data: { res, hash: signedTransaction.hash}};
 };
-
-
-
-
-
-

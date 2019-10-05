@@ -11,8 +11,8 @@ export function fetchMenusRequest() {
         .catch(error => ({error}));
 }
 
-export function confirmPaymentRequest(order) {
-    return axios.post(CONFIRM_PAYMENT_EP, { order })
+export function confirmPaymentRequest(order, hash) {
+    return axios.post(CONFIRM_PAYMENT_EP, { order, hash })
         .then(res => res.data)
         .then(data => ({data}))
         .catch(error => ({error}));

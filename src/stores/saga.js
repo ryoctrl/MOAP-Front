@@ -23,6 +23,10 @@ import {
     confirmPaymentRequest
 } from './api';
 
+import {
+    generateTransactionMessage
+} from '../helpers/NemHelper';
+
 const API_HOST = process.env.REACT_APP_API_HOST;
 
 const connect = () => {
@@ -69,15 +73,14 @@ function* menuFlow() {
 function* paymentFlow(orderData) {
     yield put(successPostOrder({data: orderData}));
     const { payload }  = yield take(performPayment);
-    console.log('payload is below');
-    console.log(payload);
     const user = yield select(state => state.user);
-    const { data: paymentResult, error: paymentError } = yield call(sendToken, payload.total_price, user.privateKey);
-    console.log('nem paymented!');
-    console.log(paymentResult);
-    console.log(paymentError);
-    const { data, error } = yield call(confirmPaymentRequest, payload);
-    console.log(data);
+    const transactionMessage = generateTransactionMessage(orderData);
+    const { data: paymentResult, error: paymentError } = yield call(sendToken, payload.total_price, transactionMessage, user.privateKey);
+    if(paymentError && !paymentResult) {
+        //TODO: Implement payment error
+        return;
+    }
+    const { data, error } = yield call(confirmPaymentRequest, payload, paymentResult.hash);
     if(data && !error) {
         yield put(successPerformPayment({data}));
     } else {
@@ -111,8 +114,6 @@ function* remainFlow() {
             continue;
         }
 
-
-        console.log('fetching nem remain!');
         const { remain, err } = yield call(getRemain, privateKey);
         if(remain && !err) {
             yield put(setRemain({remain}));
