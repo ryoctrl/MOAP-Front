@@ -47,3 +47,10 @@ export const getNemRemain = createAction(GET_NEM_REMAIN);
 
 export const SET_REMAIN = 'SET_REMAIN';
 export const setRemain = createAction(SET_REMAIN);
+
+//Page Actions
+export const CHANGE_PAGE = 'CHANGE_PAGE';
+export const changePage = createAction(CHANGE_PAGE);
+
+export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
+export const toggleDrawer = createAction(TOGGLE_DRAWER);
