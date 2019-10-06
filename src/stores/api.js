@@ -3,6 +3,7 @@ const API_HOST = process.env.REACT_APP_API_HOST;
 const FETCH_MENU_EP = API_HOST + 'api/menues';
 const CREATE_ORDER_EP = API_HOST + 'api/orders/create';
 const CONFIRM_PAYMENT_EP = API_HOST + 'api/orders/payment';
+const UPDATE_ORDER_EP = API_HOST + 'api/orders/update';
 
 export function fetchMenusRequest() {
     return axios.get(FETCH_MENU_EP)
@@ -16,6 +17,13 @@ export function confirmPaymentRequest(order, hash) {
         .then(res => res.data)
         .then(data => ({data}))
         .catch(error => ({error}));
+}
+
+export function updateOrderRequest(id, cart) {
+    return axios.post(UPDATE_ORDER_EP, { id, cart })
+        .then(res => res.data)
+        .then(data => ({data}))
+        .catch(error => ({ error }));
 }
 
 export function postOrderRequest(cart) {

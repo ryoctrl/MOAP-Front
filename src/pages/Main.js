@@ -7,14 +7,8 @@ import Settings from './Settings';
 import HistoryPage from './History';
 import NavBar from '../components/NavBar';
 import InitializeModal from '../components/Modals/InitializeModal';
-
-import { Provider } from 'react-redux';
-import configureStore from '../stores/store';
-
 import { fetchMenus } from '../stores/actions';
 
-
-console.log(HistoryPage);
 const drawerWidth = 240;
 
 const theme = createMuiTheme({

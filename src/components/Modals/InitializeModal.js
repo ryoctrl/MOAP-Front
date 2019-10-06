@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, DialogContentText, TextField, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 
 import { SEX_TYPE } from '../../constants/user';
 import connectUser from '../../connectors/userConnector';

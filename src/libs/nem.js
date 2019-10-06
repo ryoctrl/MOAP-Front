@@ -4,9 +4,7 @@ import {
     Account,
     AccountHttp,
     Mosaic,
-    MosaicHttp,
     MosaicId,
-    MosaicService,
     NetworkType,
     EncryptedMessage,
     PublicAccount,
@@ -35,8 +33,6 @@ const NETWORK_GENERATION_HASH = '249B14C178A3E7A2C8556EC3571FFAD4BAB2E71349FFD6E
 const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
 const host = new TransactionHttp(NEM_NODE_HOST);
 const accountHttp = new AccountHttp(NEM_NODE_HOST);
-const mosaicHttp = new MosaicHttp(NEM_NODE_HOST);
-const address = Address.createFromRawAddress(STORE_NEM_ADDR);
 
 export const getRemain = async (privateKey) => {
     const { address } = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
@@ -49,7 +45,6 @@ export const getRemain = async (privateKey) => {
                 resolve({remain: 0});
             }
             mosaic = mosaic[0];
-            const id = mosaic.id.id;
             const amount = mosaic.amount;
             resolve({remain: amount.compact()});
         }

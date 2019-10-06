@@ -6,9 +6,6 @@ import 'react-activity/dist/react-activity.css';
 import { withStyles } from '@material-ui/core/styles';
 import MenuCard from '../components/MenuCard';
 
-const API_HOST = process.env.REACT_APP_API_HOST;
-const MenuEndpoint = API_HOST + 'api/menues';
-
 class Menu extends Component {
     render() {
         const { classes, menu } = this.props;

@@ -38,6 +38,9 @@ export const postOrder = createAction(POST_ORDER);
 export const successPostOrder = createAction(SUCCESS_POST_ORDER);
 export const failurePostOrder = createAction(FAILURE_POST_ORDER);
 
+export const INTERRUPT_ORDER = 'INTERRUPT_ORDER';
+export const interruptOrder = createAction(INTERRUPT_ORDER);
+
 export const RESET_ORDER = 'RESET_ORDER';
 export const resetOrder = createAction(RESET_ORDER);
 

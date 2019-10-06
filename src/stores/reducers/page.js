@@ -1,4 +1,4 @@
-import { createReducer, createAction } from 'redux-act';
+import { createReducer } from 'redux-act';
 import {
     changePage,
     toggleDrawer

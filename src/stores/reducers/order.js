@@ -4,6 +4,7 @@ import {
     successPostOrder,
     successPerformPayment,
     failurePerformPayment,
+    interruptOrder,
     resetOrder,
 } from '../actions';
 import ORDER_TYPES from '../../constants/orderType';
@@ -35,9 +36,15 @@ export default createReducer({
         return state;
     },
     [successPostOrder]: (state, payload) => {
+        console.log('success postorder!');
         const newState = Object.assign({}, state);
         newState.order = payload.data;
         newState.orderState = ORDER_TYPES.PAYMENT;
+        return newState;
+    },
+    [interruptOrder]: (state, payload) => {
+        const newState = Object.assign({}, state);
+        newState.orderState = ORDER_TYPES.ORDER;
         return newState;
     },
     [resetOrder]: (state, payload) => {

@@ -32,13 +32,18 @@ class MenuCard extends Component {
 
     render() {
         const { classes, menu } = this.props;
+        const isSoldOut = menu.stocks === 0;
         let img;
         if(!menu.image) img = '/img/no-image.svg';
         else img = IMAGE_PATH + menu.image;
         return (
             <Card key={menu.id}>
-                <CardActionArea onClick={() => this.handleOpen() }>
-                    <CardMedia className={classes.media}image={img} title={menu.name}/>
+                <CardActionArea disabled={isSoldOut} onClick={() => this.handleOpen() }>
+                    <CardMedia className={classes.media}image={img} title={menu.name}>
+                        { isSoldOut && <div className={classes.soldOut}>
+                            SOULD OUT
+                        </div>}
+                    </CardMedia>
                     <CardContent>
                         <Typography variant="subtitle1" component="h2">
                             {menu.name}
@@ -59,6 +64,17 @@ const styles = theme => ({
         height: 0,
         paddingTop: '56.25%',
         backgroundSize: 'contain'
+    },
+    soldOut: {
+        position: 'absolute',
+        backgroundColor: 'red',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        fontSize: '32px',
+        color: 'white',
+        top: '40%',
+        height: '10%',
+        width: '100%',
     },
 });
 

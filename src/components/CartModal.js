@@ -6,10 +6,9 @@ import {
     postOrder,
     closeCart,
     performPayment,
-    resetOrder
+    interruptOrder
 } from '../stores/actions';
 
-import DateHelper from '../helpers/DateHelper';
 import { amountToStr } from '../helpers/AmountHelper';
 
 import ORDER_TYPES from '../constants/orderType';
@@ -21,7 +20,7 @@ const IMAGE_PATH = API_HOST + 'images/';
 class CartModal extends Component {
     closeModal() {
         this.props.dispatch(closeCart());
-        this.props.dispatch(resetOrder());
+        this.props.dispatch(interruptOrder());
     }
 
     submitOrder() {
@@ -225,7 +224,7 @@ class CartModal extends Component {
     }
 
     render() {
-        const { classes, open, onClose, dispatch, cart, menu } = this.props;
+        const { classes, cart } = this.props;
 
         return (
             <Dialog 

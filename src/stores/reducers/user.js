@@ -1,7 +1,6 @@
 import { createReducer, createAction } from 'redux-act';
 import { SEX_TYPE } from '../../constants/user';
 import { setRemain } from '../actions';
-import { amountToStr } from '../../helpers/AmountHelper';
 
 const SET_SEX = 'SET_SEX';
 export const setSex = createAction(SET_SEX);
@@ -11,9 +10,6 @@ export const setPrivateKey = createAction(SET_PRIVATE_KEY);
 
 const SET_USER_INFO = 'SET_USER_INFO';
 export const setUserInfo = createAction(SET_USER_INFO);
-
-
-
 
 const initialState = {
     initialized: false,

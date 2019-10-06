@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { fork, take, call, put, select, join } from 'redux-saga/effects';
+import { fork, take, call, put, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import {
     fetchMenus,
@@ -11,7 +11,6 @@ import {
     performPayment,
     successPerformPayment,
     failurePerformPayment,
-    resetOrder,
     getNemRemain,
     setRemain,
 } from './actions';
@@ -20,6 +19,7 @@ import sendToken, { getRemain }  from '../libs/nem';
 import {
     fetchMenusRequest,
     postOrderRequest,
+    updateOrderRequest,
     confirmPaymentRequest
 } from './api';
 
@@ -46,7 +46,7 @@ const subscribe = socket => {
 };
 
 function* read(socket) {
-    const channel = yield call(subscribe, socket);
+    yield call(subscribe, socket);
 }
 
 function* handleIO(socket) {
@@ -95,7 +95,22 @@ function* orderFlow() {
     while(true) {
         yield take(postOrder);
         const cart = yield select(state => state.cart.list);
-        const { data, error } = yield call(postOrderRequest, cart);
+        const { order } = yield select(state => state.order);
+
+        if(order === null || order.is_paid === true) {
+            const { data, error } = yield call(postOrderRequest, cart);
+            if(data && !error) {
+                yield fork(paymentFlow, data);
+            } else {
+                yield put(failurePostOrder({error}));
+            }
+            continue;
+        }
+
+        const { id: interruptedOrderId } = order;
+        const { data, error } = yield call(updateOrderRequest, interruptedOrderId, cart);
+        console.log(data);
+        console.log(error);
         if(data && !error) {
             yield fork(paymentFlow, data);
         } else {

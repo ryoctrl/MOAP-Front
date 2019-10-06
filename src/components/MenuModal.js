@@ -3,8 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { 
     Button, 
-    TextField, 
-    Typography, 
     Dialog, 
     DialogContent, 
     DialogContentText, 

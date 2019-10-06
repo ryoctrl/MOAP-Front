@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
 import { 
     AppBar, 
     Button, 
@@ -30,7 +29,7 @@ class NavBar extends Component {
     changePage = name => this.props.dispatch(changePage(name))
 
     render() {
-        const { classes, user: { remainStr: remain }, page, dispatch } = this.props;
+        const { classes, user: { remainStr: remain }, page } = this.props;
 
         return (
             <div>
@@ -66,7 +65,7 @@ class NavBar extends Component {
                     <MenuItem onClick={() => this.changePage('HISTORY')}>注文履歴</MenuItem>
                     <MenuItem onClick={() => this.changePage('SETTINGS')}>設定</MenuItem>
                 </Drawer>
-                <CartModal classes={classes}/>
+                <CartModal/>
             </div>
         );
     }
