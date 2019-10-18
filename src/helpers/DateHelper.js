@@ -2,10 +2,11 @@ import moment from 'moment';
 const DAY_STRINGS = ['日', '月', '火', '水', '木', '金', '土'];
 
 class DateHelper {
-    constructor(dateString) {
-        if(!dateString) {
+    constructor(dateString, momentFlg) {
+        if(momentFlg && dateString) {
+            this.date = moment(dateString);
+        }else if(!dateString) {
             this.date = moment();
-
         } else {
             this.date = new Date(dateString.endsWith('Z') ? dateString : dateString + 'Z');
         }
@@ -13,6 +14,10 @@ class DateHelper {
 
     getAfter(value, uom) {
         return moment().add(uom, value).format('HH:mm:ss');
+    }
+
+    getDiffFromNow(uom) {
+        return this.date.diff(moment(), uom);
     }
 
     getDay(withUnit) {
