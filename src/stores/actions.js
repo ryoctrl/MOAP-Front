@@ -57,3 +57,6 @@ export const changePage = createAction(CHANGE_PAGE);
 
 export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
 export const toggleDrawer = createAction(TOGGLE_DRAWER);
+
+export const SET_PAYMENT_INFO = 'SET_PAYMENT_INFO';
+export const setPaymentInfo = createAction(setPaymentInfo);

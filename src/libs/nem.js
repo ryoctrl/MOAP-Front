@@ -24,8 +24,6 @@ const host = new TransactionHttp(NEM_NODE_HOST);
 //店舗のNEMアドレス(売上の受取)
 const STORE_NEM_ADDR = 'SCXQVSLDPTOP7OBS7EW454ZQQTXJRTV7V3MQGAYA';
 const STORE_NEM_PUB_KEY = '2DFD4CA13807CD2DF597CCCA83BCF6E66D8D06711E3AFDA58DCD1FDA95129EB5';
-//moapで使用するMOSAICのID
-const MOSAIC_ID = '2bb09db8269361d6';
 //使用するnem chainのnetwork_generation_hash
 const NETWORK_GENERATION_HASH = '249B14C178A3E7A2C8556EC3571FFAD4BAB2E71349FFD6E97A06675906EA1584';
 // nem node
@@ -34,40 +32,44 @@ const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
 const host = new TransactionHttp(NEM_NODE_HOST);
 const accountHttp = new AccountHttp(NEM_NODE_HOST);
 
-export const getRemain = async (privateKey) => {
+export const getRemain = async (privateKey, mosaicId) => {
     const { address } = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
 
     return await new Promise((resolve, reject) => {
         const parseInfo = info => {
-            let mosaic = info.mosaics.filter(mosaic => mosaic.id.id.toHex() === MOSAIC_ID);
+            let mosaic = info.mosaics.filter(mosaic => mosaic.id.id.toHex() === mosaicId);
+            //let mosaic = info.mosaics.filter(mosaic => mosaic.id.id.toHex() === mosaicId);
             if(mosaic.length === 0) {
                 console.log('dont have mosaic!');
                 resolve({remain: 0});
+                return;
             }
             mosaic = mosaic[0];
             const amount = mosaic.amount;
             resolve({remain: amount.compact()});
         }
-        accountHttp.getAccountInfo(address).subscribe(parseInfo, err => reject({err}));
+        accountHttp.getAccountInfo(address).subscribe(parseInfo, err => {
+            reject({err});
+        });
     });
 };
 
-export default async (amount, message, privateKey) => {
+export default async (amount, message, privateKey, storeAddress, storePublicKey, mosaicId, generationHash) => {
     const transaction = TransferTransaction.create(
         Deadline.create(),
-        Address.createFromRawAddress(STORE_NEM_ADDR),
+        Address.createFromRawAddress(storeAddress),
         [
             new Mosaic(
-                new MosaicId(MOSAIC_ID),
+                new MosaicId(mosaicId),
                 UInt64.fromUint(amount)
             )
         ],
-        EncryptedMessage.create(message, PublicAccount.createFromPublicKey(STORE_NEM_PUB_KEY, NetworkType.MIJIN_TEST), privateKey, NetworkType.MIJIN_TEST),
+        EncryptedMessage.create(message, PublicAccount.createFromPublicKey(storePublicKey, NetworkType.MIJIN_TEST), privateKey, NetworkType.MIJIN_TEST),
         NetworkType.MIJIN_TEST
     );
 
     const sender = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
-    const signedTransaction = sender.sign(transaction, NETWORK_GENERATION_HASH);
+    const signedTransaction = sender.sign(transaction, generationHash);
 
     const res = await new Promise((resolve, reject) => {
         const succeeded = transactions => resolve(transactions);

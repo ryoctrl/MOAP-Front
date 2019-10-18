@@ -23,13 +23,25 @@ export default createReducer({
         return state;
     },
     [successPerformPayment]: (state, payload) => {
+        console.log(payload);
         const newState = Object.assign({}, state);
         newState.orderState = ORDER_TYPES.PAYMENTED;
+        const { handed_at: handedAt } = payload.data;
+        console.log('response is ');
+        console.log(handedAt);
+        const handedAtMoment = new DateHelper(handedAt, 'moment');
+        console.log(handedAtMoment);
+        newState.requiredMinute = handedAtMoment.getDiffFromNow('minutes');
+        newState.handedTime = handedAtMoment.date.format('HH:mm:ss');
+        console.log(newState);
+        /*
         const getRequiredMinutes = menuItem => menuItem.Menu.required_time;
         const requiredMinutes = newState.order.OrderItems.map(getRequiredMinutes);
         const requiredMinute = Math.max(requiredMinutes);
         newState.requiredMinute = requiredMinute;
         newState.handedTime = new DateHelper().getAfter('minutes', requiredMinute);
+        console.log(newState);
+        */
         return newState;
     },
     [failurePerformPayment]: (state, payload) => {

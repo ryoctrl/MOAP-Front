@@ -13,6 +13,7 @@ import {
     failurePerformPayment,
     getNemRemain,
     setRemain,
+    setPaymentInfo,
 } from './actions';
 import sendToken, { getRemain }  from '../libs/nem';
 
@@ -20,7 +21,8 @@ import {
     fetchMenusRequest,
     postOrderRequest,
     updateOrderRequest,
-    confirmPaymentRequest
+    confirmPaymentRequest,
+    fetchPaymentInfoRequest,
 } from './api';
 
 import {
@@ -73,9 +75,9 @@ function* menuFlow() {
 function* paymentFlow(orderData) {
     yield put(successPostOrder({data: orderData}));
     const { payload }  = yield take(performPayment);
-    const user = yield select(state => state.user);
+    const { privateKey, storeAddress, storePublicKey, mosaic, generationHash } = yield select(state => state.user);
     const transactionMessage = generateTransactionMessage(orderData);
-    const { data: paymentResult, error: paymentError } = yield call(sendToken, payload.total_price, transactionMessage, user.privateKey);
+    const { data: paymentResult, error: paymentError } = yield call(sendToken, payload.total_price, transactionMessage, privateKey, storeAddress, storePublicKey, mosaic, generationHash);
     if(paymentError && !paymentResult) {
         //TODO: Implement payment error
         return;
@@ -109,8 +111,6 @@ function* orderFlow() {
 
         const { id: interruptedOrderId } = order;
         const { data, error } = yield call(updateOrderRequest, interruptedOrderId, cart);
-        console.log(data);
-        console.log(error);
         if(data && !error) {
             yield fork(paymentFlow, data);
         } else {
@@ -122,15 +122,15 @@ function* orderFlow() {
 function* remainFlow() {
     while(true) {
         const user = yield select(state => state.user);
-        const { privateKey } = user;
+        const { privateKey, mosaic } = user;
 
         if(!privateKey) {
             yield call(async () => new Promise(res => setInterval(res, 1000)));
             continue;
         }
 
-        const { remain, err } = yield call(getRemain, privateKey);
-        if(remain && !err) {
+        const { remain, err } = yield call(getRemain, privateKey, mosaic);
+        if((remain || remain === 0) && !err) {
             yield put(setRemain({remain}));
         } else {
             yield put(setRemain({remain: err.toString}));
@@ -139,7 +139,14 @@ function* remainFlow() {
     }
 }
 
+function* fetchPaymentInfo() {
+    const { data, error } = yield call(fetchPaymentInfoRequest);
+    if(error && !data) return;
+    yield put(setPaymentInfo(data));
+}
+
 function* nemInit() {
+    yield fork(fetchPaymentInfo);
     yield fork(remainFlow);
 }
 

@@ -1,6 +1,9 @@
 import { createReducer, createAction } from 'redux-act';
 import { SEX_TYPE } from '../../constants/user';
-import { setRemain } from '../actions';
+import { 
+    setRemain,
+    setPaymentInfo
+} from '../actions';
 
 const SET_SEX = 'SET_SEX';
 export const setSex = createAction(SET_SEX);
@@ -17,12 +20,16 @@ const initialState = {
     sex: SEX_TYPE.NONE,
     remain: -1,
     remainStr: '-1',
+    mosaic: '',
+    storeAddress: '',
+    storePublicKey: '',
 }
 
 export default createReducer({
     [setSex]: (state, sex) => Object.assign({}, state, { sex, initialized: !!state.privateKey}),
     [setPrivateKey]: (state, privateKey) => Object.assign({}, state, { privateKey, initialized: !!state.sex}),
     [setUserInfo]: (state, payload) => Object.assign({}, state, payload, {initialized: true}),
+    [setPaymentInfo]: (state, payload) => Object.assign({}, state, payload),
     [setRemain]: (state, payload) => {
         if(state.remain === payload.remain) return state;
         const newState = Object.assign({}, state, payload);

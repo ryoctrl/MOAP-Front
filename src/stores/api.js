@@ -4,6 +4,7 @@ const FETCH_MENU_EP = API_HOST + 'api/menues';
 const CREATE_ORDER_EP = API_HOST + 'api/orders/create';
 const CONFIRM_PAYMENT_EP = API_HOST + 'api/orders/payment';
 const UPDATE_ORDER_EP = API_HOST + 'api/orders/update';
+const PAYMENT_INFO_EP = API_HOST + 'api/info/payment';
 
 export function fetchMenusRequest() {
     return axios.get(FETCH_MENU_EP)
@@ -28,6 +29,13 @@ export function updateOrderRequest(id, cart) {
 
 export function postOrderRequest(cart) {
     return axios.post(CREATE_ORDER_EP, {cart})
+        .then(res => res.data)
+        .then(data => ({data}))
+        .catch(error => ({error}));
+}
+
+export function fetchPaymentInfoRequest() {
+    return axios.get(PAYMENT_INFO_EP)
         .then(res => res.data)
         .then(data => ({data}))
         .catch(error => ({error}));
