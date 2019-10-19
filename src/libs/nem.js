@@ -32,6 +32,11 @@ const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
 const host = new TransactionHttp(NEM_NODE_HOST);
 const accountHttp = new AccountHttp(NEM_NODE_HOST);
 
+export const getAddress = privateKey => {
+    const { address: { address }} = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
+    return address;
+};
+
 export const getRemain = async (privateKey, mosaicId) => {
     const { address } = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
 
