@@ -59,14 +59,14 @@ export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
 export const toggleDrawer = createAction(TOGGLE_DRAWER);
 
 export const SET_PAYMENT_INFO = 'SET_PAYMENT_INFO';
-export const setPaymentInfo = createAction(setPaymentInfo);
+export const setPaymentInfo = createAction(SET_PAYMENT_INFO);
 
 export const SET_ADDRESS = 'SET_ADDERSS';
 export const setAddress = createAction(SET_ADDRESS);
 
 //History Actions
 export const FETCH_HISTORY = 'FETCH_HISTORY';
-export const fetchHistory = createAction(fetchHistory);
+export const fetchHistory = createAction(FETCH_HISTORY);
 
 export const FETCH_HISTORY_SUCCESS = 'FETCH_HISTORY_SUCCESS';
 export const FETCH_HISTORY_FAILURE = 'FETCH_HISTORY_FAILURE';
