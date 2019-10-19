@@ -41,7 +41,7 @@ class MenuCard extends Component {
                 <CardActionArea disabled={isSoldOut} onClick={() => this.handleOpen() }>
                     <CardMedia className={classes.media}image={img} title={menu.name}>
                         { isSoldOut && <div className={classes.soldOut}>
-                            SOULD OUT
+                            SOLD OUT
                         </div>}
                     </CardMedia>
                     <CardContent>
@@ -66,14 +66,21 @@ const styles = theme => ({
         backgroundSize: 'contain'
     },
     soldOut: {
+        [theme.breakpoints.down('md')]: {
+            top: '20%',
+            fontSize: '20px',
+        },
+        [theme.breakpoints.up('md')]: {
+            top: '40%',
+            fontSize: '32px',
+            height: '10%',
+        },
+
         position: 'absolute',
         backgroundColor: 'red',
         textAlign: 'center',
         verticalAlign: 'middle',
-        fontSize: '32px',
         color: 'white',
-        top: '40%',
-        height: '10%',
         width: '100%',
     },
 });
