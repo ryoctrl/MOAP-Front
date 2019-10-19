@@ -7,6 +7,7 @@ import {
     successPostOrder,
     openCart,
     closeCart,
+    successPerformPayment,
 } from '../actions';
 
 const initialState = {
@@ -65,6 +66,12 @@ export default createReducer({
         const newState = Object.assign({}, state);
         newState.isOpen = false;
         return newState;
-    }
+    },
+    [successPerformPayment]: (state, payload) => {
+        return Object.assign({}, state, {
+            list: [],
+            selecting: { id: -1 }
+        });
+    },
 }, initialState);
 

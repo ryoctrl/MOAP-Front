@@ -56,6 +56,15 @@ export default createReducer({
     },
     [interruptOrder]: (state, payload) => {
         const newState = Object.assign({}, state);
+        if(state.orderState === ORDER_TYPES.PAYMENTED) {
+            return {
+                orderStage: ORDER_TYPES.ORDER,
+                order: null,
+                handedTime: null,
+                requiredMinute: null,
+                isPaymented: false,
+            }
+        }
         newState.orderState = ORDER_TYPES.ORDER;
         return newState;
     },
