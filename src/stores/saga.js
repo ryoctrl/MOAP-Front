@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { fork, take, call, put, select } from 'redux-saga/effects';
+import { fork, take, call, put, select, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import {
     fetchMenus,
@@ -77,11 +77,10 @@ function* menuFlow() {
     }
 }
 
-function* paymentFlow(orderData) {
-    yield put(successPostOrder({data: orderData}));
-    const { payload }  = yield take(performPayment);
+function* paymentFlow(payloadObj) {
+    const { payload } = payloadObj;
     const { privateKey, storeAddress, storePublicKey, mosaic, generationHash } = yield select(state => state.user);
-    const transactionMessage = generateTransactionMessage(orderData);
+    const transactionMessage = generateTransactionMessage(payload);
     const { data: paymentResult, error: paymentError } = yield call(sendToken, payload.total_price, transactionMessage, privateKey, storeAddress, storePublicKey, mosaic, generationHash);
     if(paymentError && !paymentResult) {
         //TODO: Implement payment error
@@ -99,6 +98,7 @@ function* paymentFlow(orderData) {
 }
 
 function* orderFlow() {
+    let previousTask = null;
     while(true) {
         yield take(postOrder);
         const cart = yield select(state => state.cart.list);
@@ -107,7 +107,9 @@ function* orderFlow() {
         if(order === null || order.is_paid === true) {
             const { data, error } = yield call(postOrderRequest, cart);
             if(data && !error) {
-                yield fork(paymentFlow, data);
+                if(previousTask) yield cancel(previousTask);
+                yield put(successPostOrder({data}));
+                previousTask = yield takeLatest(performPayment, paymentFlow);
             } else {
                 yield put(failurePostOrder({error}));
             }
@@ -117,7 +119,9 @@ function* orderFlow() {
         const { id: interruptedOrderId } = order;
         const { data, error } = yield call(updateOrderRequest, interruptedOrderId, cart);
         if(data && !error) {
-            yield fork(paymentFlow, data);
+            if(previousTask) yield cancel(previousTask);
+            yield put(successPostOrder({data}));
+            previousTask = yield takeLatest(performPayment, paymentFlow);
         } else {
             yield put(failurePostOrder({error}));
         }
