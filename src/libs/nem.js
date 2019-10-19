@@ -21,11 +21,6 @@ const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
 const host = new TransactionHttp(NEM_NODE_HOST);
 */
 
-//店舗のNEMアドレス(売上の受取)
-const STORE_NEM_ADDR = 'SCXQVSLDPTOP7OBS7EW454ZQQTXJRTV7V3MQGAYA';
-const STORE_NEM_PUB_KEY = '2DFD4CA13807CD2DF597CCCA83BCF6E66D8D06711E3AFDA58DCD1FDA95129EB5';
-//使用するnem chainのnetwork_generation_hash
-const NETWORK_GENERATION_HASH = '249B14C178A3E7A2C8556EC3571FFAD4BAB2E71349FFD6E97A06675906EA1584';
 // nem node
 //const NEM_NODE_HOST = 'https://catapult-test.opening-line.jp:3001/';
 const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
