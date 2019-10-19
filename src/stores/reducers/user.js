@@ -2,7 +2,8 @@ import { createReducer, createAction } from 'redux-act';
 import { SEX_TYPE } from '../../constants/user';
 import { 
     setRemain,
-    setPaymentInfo
+    setPaymentInfo,
+    setAddress
 } from '../actions';
 
 const SET_SEX = 'SET_SEX';
@@ -23,11 +24,13 @@ const initialState = {
     mosaic: '',
     storeAddress: '',
     storePublicKey: '',
+    address: '',
 }
 
 export default createReducer({
     [setSex]: (state, sex) => Object.assign({}, state, { sex, initialized: !!state.privateKey}),
     [setPrivateKey]: (state, privateKey) => Object.assign({}, state, { privateKey, initialized: !!state.sex}),
+    [setAddress]: (state, address) => Object.assign({}, state, { address }),
     [setUserInfo]: (state, payload) => Object.assign({}, state, payload, {initialized: true}),
     [setPaymentInfo]: (state, payload) => Object.assign({}, state, payload),
     [setRemain]: (state, payload) => {

@@ -14,8 +14,12 @@ import {
     getNemRemain,
     setRemain,
     setPaymentInfo,
+    setAddress,
+    fetchHistory,
+    fetchHistorySuccess,
+    fetchHistoryFailure,
 } from './actions';
-import sendToken, { getRemain }  from '../libs/nem';
+import sendToken, { getRemain, getAddress }  from '../libs/nem';
 
 import {
     fetchMenusRequest,
@@ -23,6 +27,7 @@ import {
     updateOrderRequest,
     confirmPaymentRequest,
     fetchPaymentInfoRequest,
+    fetchHistoryRequest,
 } from './api';
 
 import {
@@ -139,6 +144,30 @@ function* remainFlow() {
     }
 }
 
+function* fetchHistoryFlow() {
+    while(true) {
+        yield take(fetchHistory);
+
+        const user = yield select(state => state.user);
+        const { privateKey } = user;
+        let { address } = user;
+
+        if(!privateKey) continue;
+
+        if(!address) {
+            address  = getAddress(privateKey);
+            yield put(setAddress(address));
+        }
+
+        const { data, error } = yield call(fetchHistoryRequest, address);
+        if(data && !error) {
+            yield put(fetchHistorySuccess(data));
+        } else {
+            yield put(fetchHistoryFailure(error));
+        }
+    }
+}
+
 function* fetchPaymentInfo() {
     const { data, error } = yield call(fetchPaymentInfoRequest);
     if(error && !data) return;
@@ -150,9 +179,15 @@ function* nemInit() {
     yield fork(remainFlow);
 }
 
+function* fetchHistoryInit() {
+    yield fork(fetchHistoryFlow);
+    yield put(fetchHistory());
+}
+
 export default function* rootSaga() {
     yield fork(socketFlow);
     yield fork(menuFlow);
     yield fork(orderFlow);
     yield fork(nemInit);
+    yield fork(fetchHistoryInit);
 }
