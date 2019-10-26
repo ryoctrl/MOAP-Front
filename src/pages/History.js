@@ -12,7 +12,8 @@ class HistoryPage extends Component {
         this.props.dispatch(fetchHistory());
     }
     render() {
-        const { classes, history: { orders } } = this.props;
+        const { classes, history: { orders: ordersMaster} } = this.props;
+        const orders = ordersMaster.reverse();
         return (
             <div className={classes.wrapper}>
                 <Typography align="center" variant="h5" component="h5">
