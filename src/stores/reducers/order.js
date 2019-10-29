@@ -16,11 +16,12 @@ const initialState = {
     handedTime: null,
     requiredMinute: null,
     isPaymented: false,
+    isPaymenting: false,
 };
 
 export default createReducer({
     [performPayment]: (state, payload) => {
-        return state;
+        return Object.assign({}, state, { isPaymenting: true });
     },
     [successPerformPayment]: (state, payload) => {
         const newState = Object.assign({}, state);
@@ -29,10 +30,11 @@ export default createReducer({
         const handedAtMoment = new DateHelper(handedAt, 'moment');
         newState.requiredMinute = handedAtMoment.getDiffFromNow('minutes');
         newState.handedTime = handedAtMoment.date.format('HH:mm:ss');
+        newState.isPaymenting = false;
         return newState;
     },
     [failurePerformPayment]: (state, payload) => {
-        return state;
+        return Object.assign({}, state, {isPaymenting: false});
     },
     [successPostOrder]: (state, payload) => {
         console.log('success postorder!');

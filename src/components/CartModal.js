@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Button, Typography, Dialog, DialogContent, DialogContentText, DialogTitle, Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { 
+    Button, 
+    Typography, 
+    Dialog, 
+    DialogContent, 
+    DialogContentText, 
+    DialogTitle, 
+    Avatar, 
+    List, 
+    ListItem, 
+    ListItemAvatar, 
+    ListItemText,
+    CircularProgress
+} from '@material-ui/core';
 import { connect } from 'react-redux';
 import {
     postOrder,
@@ -86,7 +99,7 @@ class CartModal extends Component {
     }
 
     renderPaymentContent() {
-        const { classes, user: { remain, remainStr }, order: { order: { total_price: totalPrice} }} = this.props;
+        const { classes, user: { remain, remainStr }, order: { order: { total_price: totalPrice}, isPaymenting }} = this.props;
         const afterRemain = remain - totalPrice;
         const canPayment = afterRemain >= 0;
         return (
@@ -131,10 +144,15 @@ class CartModal extends Component {
                 </div>
                 <Button 
                     onClick={this.performPayment.bind(this)} 
-                    disabled={!canPayment}
+                    disabled={!canPayment || isPaymenting}
                     className={classes.fullWidth}>
-                    支払う
+                    { isPaymenting ? '決済中...' : '支払う'}
                 </Button>
+                { isPaymenting && 
+                    <div className={classes.loadingCircle}>
+                        <CircularProgress />
+                    </div>
+                }
             </div>
         )
     }
@@ -278,6 +296,16 @@ const styles = theme => ({
     },
     rowContent: {
         flexGrow: 1
+    },
+    loadingCircle: {
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        alignItems: 'center',
     }
 });
 
