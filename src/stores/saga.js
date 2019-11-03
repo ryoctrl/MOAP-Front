@@ -30,6 +30,7 @@ import {
     confirmPaymentRequest,
     fetchPaymentInfoRequest,
     fetchHistoryRequest,
+    activateRequest,
 } from './api';
 
 import {
@@ -195,13 +196,23 @@ function* userInit() {
     yield delay(500);
     const user = yield select(state => state.user);
     if(user.privateKey) return;
-    const { payload } = yield take(userActions.initializeUserInfo);
+    while(true) {
+        console.log('waiting input student number!');
+        const { payload } = yield take(userActions.initializeUserInfo);
 
-    const account = generateAccount();
-    console.log(account);
-    Object.assign(payload, account);
+        const account = generateAccount();
+        console.log(account);
+        Object.assign(payload, account);
 
-    yield put(userActions.setUserInfo(payload));
+        const { data, error } = yield call(activateRequest, payload.studentNumber, account.address);
+        if(data && !error) {
+            console.log('success initialize!!');
+            yield put(userActions.setUserInfo(payload));
+        } else {
+            const { message } = error.response.data;
+            console.log(message);
+        }
+    }
 }
 
 export default function* rootSaga() {
