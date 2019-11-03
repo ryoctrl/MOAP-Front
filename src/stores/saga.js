@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { fork, take, call, put, select, takeLatest, cancel } from 'redux-saga/effects';
+import { fork, take, call, put, select, takeLatest, cancel, delay} from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import {
     fetchMenus,
@@ -19,7 +19,9 @@ import {
     fetchHistorySuccess,
     fetchHistoryFailure,
 } from './actions';
-import sendToken, { getRemain, getAddress }  from '../libs/nem';
+import sendToken, { getRemain, getAddress, generateAccount }  from '../libs/nem';
+
+import * as userActions from './reducers/user';
 
 import {
     fetchMenusRequest,
@@ -142,7 +144,9 @@ function* remainFlow() {
         if((remain || remain === 0) && !err) {
             yield put(setRemain({remain}));
         } else {
-            yield put(setRemain({remain: err.toString}));
+            const msg = err.message;
+            console.log(msg);
+            yield put(setRemain({remain: '更新中'}));
         }
         yield call(async () => new Promise(res => setInterval(res, 2000)));
     }
@@ -188,10 +192,24 @@ function* fetchHistoryInit() {
     yield put(fetchHistory());
 }
 
+function* userInit() {
+    yield delay(500);
+    const user = yield select(state => state.user);
+    if(user.privateKey) return;
+    const { payload } = yield take(userActions.initializeUserInfo);
+
+    const account = generateAccount();
+    console.log(account);
+    Object.assign(payload, account);
+
+    yield put(userActions.setUserInfo(payload));
+}
+
 export default function* rootSaga() {
     yield fork(socketFlow);
     yield fork(menuFlow);
     yield fork(orderFlow);
     yield fork(nemInit);
     yield fork(fetchHistoryInit);
+    yield fork(userInit);
 }

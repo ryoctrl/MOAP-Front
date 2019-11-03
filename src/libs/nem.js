@@ -27,6 +27,16 @@ const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
 const host = new TransactionHttp(NEM_NODE_HOST);
 const accountHttp = new AccountHttp(NEM_NODE_HOST);
 
+export const generateAccount = () => {
+    const account = Account.generateNewAccount(NetworkType.MIJIN_TEST);
+    console.log(account);
+    return {
+        address: account.address,
+        publicKey: account.publicKey,
+        privateKey: account.privateKey
+    };
+};
+
 export const getAddress = privateKey => {
     const { address: { address }} = Account.createFromPrivateKey(privateKey, NetworkType.MIJIN_TEST);
     return address;
@@ -37,6 +47,7 @@ export const getRemain = async (privateKey, mosaicId) => {
 
     return await new Promise((resolve, reject) => {
         const parseInfo = info => {
+            console.log('parsing!!');
             let mosaic = info.mosaics.filter(mosaic => mosaic.id.id.toHex() === mosaicId);
             //let mosaic = info.mosaics.filter(mosaic => mosaic.id.id.toHex() === mosaicId);
             if(mosaic.length === 0) {
@@ -49,7 +60,7 @@ export const getRemain = async (privateKey, mosaicId) => {
             resolve({remain: amount.compact()});
         }
         accountHttp.getAccountInfo(address).subscribe(parseInfo, err => {
-            reject({err});
+            resolve({err});
         });
     });
 };

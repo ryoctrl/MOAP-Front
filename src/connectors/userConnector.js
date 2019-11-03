@@ -6,7 +6,7 @@ const mapStateToProps = store => ({user: store.user});
 const mapDiaptchToProps = dispatch  => ({
     setSex:  sex => dispatch(userActions.setSex(sex)),
     setPrivateKey: privateKey => dispatch(userActions.setPrivateKey(privateKey)),
-    setUserInfo: (sex, privateKey) => dispatch(userActions.setUserInfo({sex, privateKey}))
+    setUserInfo: (sex, studentNumber) => dispatch(userActions.initializeUserInfo({sex, studentNumber}))
 })
 
 export default connect(mapStateToProps, mapDiaptchToProps);

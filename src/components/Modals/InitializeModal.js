@@ -11,15 +11,23 @@ class InitializeModal extends Component {
         const { user } = this.props;
         this.state = {
             sex: user.sex,
-            privateKey: user.privateKey
+            studentNumber: user.studentNumber
         };
     }
 
-    changeSex = ({target: { value: sex }}) => this.setState({sex})
-    changePrivateKey = ({target: { value: privateKey }})=> this.setState({privateKey})
+    changeSex = event => {
+        const { target: { value: sex } } = event;
+        this.setState({sex});
+    }
 
-    save = () => this.props.setUserInfo(this.state.sex, this.state.privateKey)
+    changeStudentNumber = event => {
+        const { target : { value: studentNumber }} = event;
+        this.setState({ studentNumber });
+    }
 
+    save = () =>  {
+        this.props.setUserInfo(this.state.sex, this.state.studentNumber);
+    }
 
     render() {
         const { classes, user } = this.props;
@@ -48,9 +56,9 @@ class InitializeModal extends Component {
                     <TextField 
                         autoFocus
                         margin="dense"
-                        id="privateKey"
-                        label="秘密鍵"
-                        onChange={this.changePrivateKey}
+                        id="studentNumber"
+                        label="学籍番号"
+                        onChange={this.changeStudentNumber}
                         fullWidth/>
                 </DialogContent>
                 <DialogActions>
