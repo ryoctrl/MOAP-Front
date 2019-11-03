@@ -1,7 +1,14 @@
 {
-  "short_name": "MOAP",
-  "name": "Mobile order and Pay Application",
-    "icons": [
+	"name":				"",
+	"short_name":		"",
+	"description":		"",
+	"start_url":		"/",
+	"display":			"standalone",
+	"orientation":		"any",
+	"background_color":	"#fff",
+	"theme_color":		"#fff",
+	"orientation":		"any",
+	"icons": [
 		{
 			"src": "/android-chrome-36x36.png",
 			"sizes": "36x36",
@@ -57,9 +64,5 @@
 			"sizes": "512x512",
 			"type": "image/png"
 		}
-	],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+	]
 }
