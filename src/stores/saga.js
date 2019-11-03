@@ -145,7 +145,6 @@ function* remainFlow() {
             yield put(setRemain({remain}));
         } else {
             const msg = err.message;
-            console.log(msg);
             yield put(setRemain({remain: '更新中'}));
         }
         yield call(async () => new Promise(res => setInterval(res, 2000)));

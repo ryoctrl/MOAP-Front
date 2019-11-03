@@ -17,7 +17,15 @@ class Settings extends Component {
                         学籍番号
                     </Typography>
                     <Typography align="center" variant="body2" component="body2">
-                        Your number.
+                        {user.studentNumber || 'No Number'}
+                    </Typography>
+                </div>
+                <div>
+                    <Typography align="left" variant="body1" component="body1">
+                        アドレス
+                    </Typography>
+                    <Typography align="center" variant="body2" component="body2">
+                        {user.address || 'No Address'}
                     </Typography>
                 </div>
                 <div>
@@ -33,11 +41,9 @@ class Settings extends Component {
                         性別
                     </Typography>
                     <Typography align="center" variant="body2" component="body2">
-                        {user.sex}
+                        {user.sex || 'No gender'}
                     </Typography>
                 </div>
-
-
             </div>
         )
     }

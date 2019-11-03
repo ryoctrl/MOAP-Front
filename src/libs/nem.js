@@ -31,7 +31,7 @@ export const generateAccount = () => {
     const account = Account.generateNewAccount(NetworkType.MIJIN_TEST);
     console.log(account);
     return {
-        address: account.address,
+        address: account.address.address,
         publicKey: account.publicKey,
         privateKey: account.privateKey
     };
