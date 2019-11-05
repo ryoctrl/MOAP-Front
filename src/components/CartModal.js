@@ -66,6 +66,8 @@ class CartModal extends Component {
             return Object.assign({}, cartMenu, cartMenuObj[0]);
         });
 
+        let totalPrice = cartList.reduce((sum, cart) => sum + (cart.amount * cart.price), 0);
+
         const isEmpty = cartList.length === 0;
 
         return (
@@ -83,11 +85,26 @@ class CartModal extends Component {
                                 </ListItemAvatar>
                                 <ListItemText 
                                     primary={item.name} 
-                                    secondary={item.amount} />
+                                    secondary={`${item.amount}コ ${item.amount * item.price}円`} />
                             </ListItem>
                         )
                     })}
                 </List>
+                <hr></hr>
+                <div className={classes.row}>
+                    <DialogContentText 
+                        align='left'
+                        noWrap={true}
+                        className={classes.rowTitle}>
+                        決済後残高
+                    </DialogContentText>
+                    <Typography 
+                        align='right' 
+                        className={classes.rowContent}>
+                        { amountToStr(totalPrice) } 円
+                    </Typography>
+                </div>
+
                 <Button 
                     onClick={this.submitOrder.bind(this)}  
                     className={classes.fullWidth}
