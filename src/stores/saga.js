@@ -18,6 +18,7 @@ import {
     fetchHistory,
     fetchHistorySuccess,
     fetchHistoryFailure,
+    setError,
 } from './actions';
 import sendToken, { getRemain, getAddress, generateAccount }  from '../libs/nem';
 
@@ -200,17 +201,27 @@ function* userInit() {
         console.log('waiting input student number!');
         const { payload } = yield take(userActions.initializeUserInfo);
 
+        if(payload.sex === 'NONE') {
+            yield put(setError('INIT性別を選択してください'));
+            continue;
+        }
+
+        if(payload.studentNumber.length !== 10)  {
+            yield put(setError('INIT学籍番号は10桁で入力してください'));
+            continue;
+        }
+
         const account = generateAccount();
         console.log(account);
         Object.assign(payload, account);
 
-        const { data, error } = yield call(activateRequest, payload.studentNumber, account.address);
+        const { data, error } = yield call(activateRequest, payload.studentNumber, account.address, account.publicKey);
         if(data && !error) {
             console.log('success initialize!!');
             yield put(userActions.setUserInfo(payload));
         } else {
             const { message } = error.response.data;
-            console.log(message);
+            yield put(setError('INIT' + (message || 'エラーが発生しました')));
         }
     }
 }

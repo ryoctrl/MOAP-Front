@@ -50,8 +50,8 @@ export function fetchHistoryRequest(address) {
         .catch(error => ({ error }));
 }
 
-export function activateRequest(studentNumber, address) {
-    return axios.post(ACTIVATE_EP, { studentNumber, address })
+export function activateRequest(studentNumber, address, publicKey) {
+    return axios.post(ACTIVATE_EP, { studentNumber, address, publicKey})
         .then(res => res.data)
         .then(data => ({ data }))
         .catch(error => ({ error }));

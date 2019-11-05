@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import { Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 
 import { SEX_TYPE } from '../../constants/user';
 import connectUser from '../../connectors/userConnector';
@@ -30,7 +30,7 @@ class InitializeModal extends Component {
     }
 
     render() {
-        const { classes, user } = this.props;
+        const { classes, user, page } = this.props;
         return (
             <Dialog open={!user.initialized}>
                 <DialogTitle>初期設定</DialogTitle>
@@ -61,6 +61,11 @@ class InitializeModal extends Component {
                         onChange={this.changeStudentNumber}
                         fullWidth/>
                 </DialogContent>
+                { page.errorMessage.startsWith('INIT') &&
+                    <Typography className={classes.errorMessage} >
+                        { page.errorMessage.replace('INIT', '')}
+                    </Typography>
+                }
                 <DialogActions>
                     <Button onClick={this.save} color="primary">
                         保存
@@ -75,6 +80,10 @@ const styles = theme => ({
     gender: {
         display: 'flex',
         flexDirection: 'row'
+    },
+    errorMessage: {
+        color: 'red',
+        textAlign: 'center',
     }
 });
 

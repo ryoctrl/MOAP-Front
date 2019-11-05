@@ -74,3 +74,6 @@ export const FETCH_HISTORY_FAILURE = 'FETCH_HISTORY_FAILURE';
 
 export const fetchHistorySuccess = createAction(FETCH_HISTORY_SUCCESS);
 export const fetchHistoryFailure = createAction(FETCH_HISTORY_FAILURE);
+
+export const SET_ERROR = 'SET_ERROR';
+export const setError = createAction(SET_ERROR);
