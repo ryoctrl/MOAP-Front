@@ -8,6 +8,12 @@ const PAYMENT_INFO_EP = API_HOST + 'api/info/payment';
 const FETCH_HISTORY_EP = API_HOST + 'api/orders/history';
 const ACTIVATE_EP = API_HOST + 'api/user/activate';
 
+const QUEUE_HOST = 'https://moap-queue.mosin.jp/';
+const NEW_QUEUE_EP = QUEUE_HOST + 'queue/new';
+const UPDATE_ORDER_QUEUE_EP = QUEUE_HOST + 'queue/order';
+const UPDATE_PAYMENT_EP = QUEUE_HOST + 'queue/payment';
+const UPDATE_SERVICE_EP = QUEUE_HOST + 'queue/service';
+
 export function fetchMenusRequest() {
     return axios.get(FETCH_MENU_EP)
         .then(res => res.data)
@@ -55,5 +61,26 @@ export function activateRequest(studentNumber, address, publicKey) {
         .then(res => res.data)
         .then(data => ({ data }))
         .catch(error => ({ error }));
+}
+
+export function newQueue(isMan) {
+    return axios.post(NEW_QUEUE_EP, {isMan})
+        .then(res => res.data)
+        .then(data => ({data}))
+        .catch(error => ({error}));
+}
+
+export function updateOrder(queue) {
+    return axios.post(UPDATE_ORDER_QUEUE_EP, queue)
+        .then(res => res.data)
+        .then(data => ({data}))
+        .catch(error => ({error}));
+}
+
+export function updatePayment(queue) {
+return axios.post(UPDATE_PAYMENT_EP, queue)
+        .then(res => res.data)
+        .then(data => ({data}))
+        .catch(error => ({error}));
 }
 

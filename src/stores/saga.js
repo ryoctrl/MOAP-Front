@@ -19,7 +19,12 @@ import {
     fetchHistorySuccess,
     fetchHistoryFailure,
     setError,
+    createNewQueue,
+    updateQueueOrder,
+    updateQueuePayment,
+    setQueue,
 } from './actions';
+
 import sendToken, { getRemain, getAddress, generateAccount }  from '../libs/nem';
 
 import * as userActions from './reducers/user';
@@ -32,6 +37,9 @@ import {
     fetchPaymentInfoRequest,
     fetchHistoryRequest,
     activateRequest,
+    newQueue,
+    updateOrder,
+    updatePayment,
 } from './api';
 
 import {
@@ -82,6 +90,7 @@ function* menuFlow() {
 }
 
 function* paymentFlow(payloadObj) {
+    yield put(updateQueuePayment());
     const { payload } = payloadObj;
     const { privateKey, storeAddress, storePublicKey, mosaic, generationHash } = yield select(state => state.user);
     const transactionMessage = generateTransactionMessage(payload);
@@ -226,6 +235,45 @@ function* userInit() {
     }
 }
 
+function* newQueueFlow() {
+    yield take(createNewQueue);
+    let user = yield select(state => state.user)
+    while(!user.sex) {
+        user = yield select(state => state.user);
+    }
+
+    const { data, error }  = yield call(newQueue, user.sex === 'MALE');
+    if(data && !error) {
+        yield put(setQueue(data.queue));
+        yield put(updateQueueOrder());
+    }
+}
+
+function*  updateOrderFlow() {
+    yield take(updateQueueOrder);
+    const queue = yield select(state => state.queue.queue);
+    if(queue.id === -1) return;
+    const { data, error } = yield call(updateOrder, queue);
+    console.log(data);
+    if(data && !error) {
+        yield put(setQueue(data.queue));
+    }
+}
+
+function* updatePaymentFlow() {
+    yield take(updateQueuePayment);
+    const queue = yield select(state => state.queue.queue);
+    if(queue.id === -1) return;
+    yield call(updatePayment, queue);
+    yield delay(5000);
+    yield fork(newQueueFlow);
+}
+
+function* loggerFlow() {
+    yield delay(1000);
+    yield put(createNewQueue());
+}
+
 export default function* rootSaga() {
     yield fork(socketFlow);
     yield fork(menuFlow);
@@ -233,4 +281,8 @@ export default function* rootSaga() {
     yield fork(nemInit);
     yield fork(fetchHistoryInit);
     yield fork(userInit);
+    yield fork(newQueueFlow);
+    yield fork(updateOrderFlow);
+    yield fork(updatePaymentFlow);
+    yield fork(loggerFlow);
 }

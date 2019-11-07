@@ -77,3 +77,14 @@ export const fetchHistoryFailure = createAction(FETCH_HISTORY_FAILURE);
 
 export const SET_ERROR = 'SET_ERROR';
 export const setError = createAction(SET_ERROR);
+
+
+export const NEW_QUEUE = 'NEW_QUEUE';
+export const UPDATE_ORDER_QUEUE = 'UPDATE_ORDER_QUEUE';
+export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
+export const createNewQueue = createAction(NEW_QUEUE);
+export const updateQueueOrder = createAction(UPDATE_ORDER_QUEUE);
+export const updateQueuePayment = createAction(UPDATE_PAYMENT);
+
+export const SET_QUEUE = 'SET_QUEUE';
+export const setQueue = createAction(SET_QUEUE);

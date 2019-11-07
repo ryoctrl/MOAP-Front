@@ -5,6 +5,7 @@ import order from './order';
 import user from './user';
 import page from './page';
 import history from './history';
+import queue from './queue';
 
 export default combineReducers({
     menu,
@@ -12,5 +13,6 @@ export default combineReducers({
     order,
     user,
     page,
-    history
+    history,
+    queue,
 });

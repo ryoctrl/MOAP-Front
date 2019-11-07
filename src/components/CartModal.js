@@ -96,7 +96,7 @@ class CartModal extends Component {
                         align='left'
                         noWrap={true}
                         className={classes.rowTitle}>
-                        決済後残高
+                        合計金額
                     </DialogContentText>
                     <Typography 
                         align='right' 
