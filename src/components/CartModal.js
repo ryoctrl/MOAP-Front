@@ -31,6 +31,10 @@ const IMAGE_PATH = API_HOST + 'images/';
 
 
 class CartModal extends Component {
+    componentDidMount() {
+        console.log('did mount!!');
+    }
+
     closeModal() {
         this.props.dispatch(closeCart());
         this.props.dispatch(interruptOrder());
@@ -60,7 +64,7 @@ class CartModal extends Component {
     }
 
     renderOrderContent() {
-        const { classes, cart, menu } = this.props;
+        const { classes, cart, menu, page } = this.props;
         const cartList = cart.list.map(cartMenu => {
             const cartMenuObj = menu.list.filter(m => m.id === cartMenu.id);
             return Object.assign({}, cartMenu, cartMenuObj[0]);
@@ -111,6 +115,12 @@ class CartModal extends Component {
                     disabled={isEmpty}>
                     決済画面へ
                 </Button>
+                { page.errorMessage.startsWith('CORDER') &&
+                    <Typography className={classes.errorMessage} >
+                        { page.errorMessage.replace('CORDER', '')}
+                    </Typography>
+                }
+
             </div>
         )
     }
@@ -323,7 +333,12 @@ const styles = theme => ({
         top: 0,
         left: 0,
         alignItems: 'center',
+    },
+    errorMessage: {
+        color: 'red',
+        textAlign: 'center',
     }
+
 });
 
 CartModal = connect(s => s)(CartModal);

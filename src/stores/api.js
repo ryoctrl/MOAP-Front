@@ -5,6 +5,7 @@ const CREATE_ORDER_EP = API_HOST + 'api/orders/create';
 const CONFIRM_PAYMENT_EP = API_HOST + 'api/orders/payment';
 const UPDATE_ORDER_EP = API_HOST + 'api/orders/update';
 const PAYMENT_INFO_EP = API_HOST + 'api/info/payment';
+const SERVICE_INFO_EP = API_HOST + 'api/info/inservice';
 const FETCH_HISTORY_EP = API_HOST + 'api/orders/history';
 const ACTIVATE_EP = API_HOST + 'api/user/activate';
 
@@ -77,10 +78,25 @@ export function updateOrder(queue) {
         .catch(error => ({error}));
 }
 
-export function updatePayment(queue) {
-return axios.post(UPDATE_PAYMENT_EP, queue)
+export function updatePayment(queue, orderId) {
+    return axios.post(UPDATE_PAYMENT_EP, Object.assign({}, queue, { orderId }))
         .then(res => res.data)
         .then(data => ({data}))
         .catch(error => ({error}));
+}
+
+export function updateService(queue) {
+return axios.post(UPDATE_SERVICE_EP, queue)
+        .then(res => res.data)
+        .then(data => ({data}))
+        .catch(error => ({error}));
+}
+
+export function checkInService() {
+    return axios.get(SERVICE_INFO_EP)
+        .then(res => res.data)
+        .then(inService => ({ inService }))
+        .catch(inServiceError => ({ inServiceError}));
+
 }
 

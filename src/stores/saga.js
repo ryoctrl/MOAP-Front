@@ -22,6 +22,7 @@ import {
     createNewQueue,
     updateQueueOrder,
     updateQueuePayment,
+    updateQueueService,
     setQueue,
 } from './actions';
 
@@ -40,6 +41,8 @@ import {
     newQueue,
     updateOrder,
     updatePayment,
+    updateService,
+    checkInService,
 } from './api';
 
 import {
@@ -90,6 +93,10 @@ function* menuFlow() {
 }
 
 function* paymentFlow(payloadObj) {
+    const { inService = { inservice: false } , inServiceError } = yield call(checkInService);
+    if(!inService.inservice) {
+        return put(setError(`PORDER${inService.message || '現在サービスが停止しています'}`));
+    }
     yield put(updateQueuePayment());
     const { payload } = payloadObj;
     const { privateKey, storeAddress, storePublicKey, mosaic, generationHash } = yield select(state => state.user);
@@ -101,6 +108,7 @@ function* paymentFlow(payloadObj) {
     }
     const { data, error } = yield call(confirmPaymentRequest, payload, paymentResult.hash);
     if(data && !error) {
+        yield put(updateQueueService());
         yield put(successPerformPayment({data}));
     } else {
         yield put(failurePerformPayment({error}));
@@ -124,6 +132,8 @@ function* orderFlow() {
                 yield put(successPostOrder({data}));
                 previousTask = yield takeLatest(performPayment, paymentFlow);
             } else {
+                const { message } = error.response.data;
+                yield put(setError(`CORDER${message}`));
                 yield put(failurePostOrder({error}));
             }
             continue;
@@ -236,37 +246,62 @@ function* userInit() {
 }
 
 function* newQueueFlow() {
-    yield take(createNewQueue);
-    let user = yield select(state => state.user)
-    while(!user.sex) {
-        user = yield select(state => state.user);
-    }
+    while(true) {
+        yield take(createNewQueue);
+        let user = yield select(state => state.user)
+        while(!user.sex) {
+            user = yield select(state => state.user);
+        }
 
-    const { data, error }  = yield call(newQueue, user.sex === 'MALE');
-    if(data && !error) {
-        yield put(setQueue(data.queue));
-        yield put(updateQueueOrder());
+        const { data, error }  = yield call(newQueue, user.sex === 'MALE');
+        if(data && !error) {
+            console.log(data);
+            yield put(setQueue(data.queue));
+            yield put(updateQueueOrder());
+        }
     }
 }
 
 function*  updateOrderFlow() {
-    yield take(updateQueueOrder);
-    const queue = yield select(state => state.queue.queue);
-    if(queue.id === -1) return;
-    const { data, error } = yield call(updateOrder, queue);
-    console.log(data);
-    if(data && !error) {
-        yield put(setQueue(data.queue));
+    while(true) {
+        yield take(updateQueueOrder);
+        const queue = yield select(state => state.queue.queue);
+        if(queue.id === -1) return;
+        const { data, error } = yield call(updateOrder, queue);
+        console.log(data);
+        if(data && !error) {
+            yield put(setQueue(data.queue));
+        }
     }
 }
 
 function* updatePaymentFlow() {
-    yield take(updateQueuePayment);
-    const queue = yield select(state => state.queue.queue);
-    if(queue.id === -1) return;
-    yield call(updatePayment, queue);
-    yield delay(5000);
-    yield fork(newQueueFlow);
+    while(true) {
+        yield take(updateQueuePayment);
+        const { queue: { queue }, order: { order } } = yield select(state => (console.log(state), state));
+        console.log(queue);
+        console.log(order);
+        if(!order) return;
+        const orderId = order.id;
+        
+        console.log(orderId);
+        if(queue.id === -1) return;
+
+        yield call(updatePayment, queue, orderId);
+    }
+}
+
+function* updateServiceFlow() {
+    while(true) {
+        yield take(updateQueueService);
+        const queue = yield select(state => state.queue.queue);
+        if(queue.id === -1) return;
+        yield call(updateService, queue);
+        console.log('delaying 5 secs');
+        yield delay(5000);
+        console.log('forking new queue!');
+        yield fork(loggerFlow);
+    }
 }
 
 function* loggerFlow() {
@@ -284,5 +319,6 @@ export default function* rootSaga() {
     yield fork(newQueueFlow);
     yield fork(updateOrderFlow);
     yield fork(updatePaymentFlow);
+    yield fork(updateServiceFlow);
     yield fork(loggerFlow);
 }
