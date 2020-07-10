@@ -1,67 +1,89 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { TextField, Dialog, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { 
+    Button, 
+    Dialog, 
+    DialogContent, 
+    DialogContentText, 
+    DialogTitle 
+} from '@material-ui/core';
 import { connect } from 'react-redux';
-import { addCart } from '../stores/Cart';
+import { 
+    addCart,
+    subCart
+} from '../stores/actions';
 
 class MenuModal extends Component {
-    constructor(props) {
-        super();
-        this.state = {
-            amount: 0
-        };
-    }
-
-    changeAmount(e, menu) {
-        const amount = e.target.value;
-        const action = addCart(menu, amount);
-        const res = this.props.dispatch(action);
-        this.setState({
-            amount: res.amount
-        });
-    }
-
     render() {
-        const { classes, menu, open, onClose, cart } = this.props;
+        const { classes, dispatch, open, onClose, cart } = this.props;
+        const menu = cart.selecting;
+        const cartMenu = (cart.list.filter(cm => cm.id === menu.id))[0] || {amount: 0};
         return (
-            <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">{menu.name}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        単価: {menu.price}
-                        合計金額: {menu.price * this.state.amount}
-                    </DialogContentText>
-                    <TextField 
-                        id="standard-number" 
-                        label="数量" 
-                        value={this.state.amount}
-                        min={0}
-                        max={menu.stocks}
-                        onChange={e => this.changeAmount(e, menu)}
-                        type="number" 
-                        className={classes.textField} 
-                        InputLabelProps={{shrink: true, }} 
-                        margin="normal"/>
-                </DialogContent>
+            <Dialog 
+                open={open} 
+                onClose={onClose} 
+                className={classes.dialog}
+                aria-labelledby="form-dialog-title">
+                <div className={classes.dialogCard}>
+                    <DialogTitle>{menu.name}</DialogTitle>
+                    <DialogContent className={classes.content}>
+                        <div className={classes.content}>
+                            <span className={classes.textTitle}>単価:</span>
+                            <span className={classes.text}>{menu.price}</span>
+                        </div>
+                        <DialogContentText className={classes.content}>
+                            {/*
+                                <div className={classes.content}>
+                                */}
+                            <span className={classes.textTitle}>合計金額:</span>
+                            <span className={classes.text}>{menu.price * cartMenu.amount}</span>
+                        </DialogContentText>
+                        <div className={classes.content}>
+                            <Button onClick={() => dispatch(subCart(menu))}>
+                                <KeyboardArrowLeft />
+                            </Button>
+                            {cartMenu.amount}
+                            <Button onClick={() => dispatch(addCart(menu))}>
+                                <KeyboardArrowRight />
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </div>
             </Dialog>
         );
    }
 }
 
 const styles = theme => ({
+    dialogCard: {
+        [theme.breakpoints.down('md')]: {
+            minWidth: '50vw'
+        },
+        [theme.breakpoints.up('md')]: {
+            minWidth: '25vw'
+        },
+        flex: 1,
+    },
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
         width: 200,
+    },
+    content: {
+        alignItems: 'center',
+        textAlign: 'center'
+    },
+    textTitle: {
+        textAlign: 'left',
+    },
+    text: {
+        textAlign: 'center'
+
     }
 });
 
 
-/*
 MenuModal = connect(s => s)(MenuModal);
 MenuModal = withStyles(styles)(MenuModal);
-
 export default MenuModal;
-*/
-
-export default withStyles(styles)(connect(s => s)(MenuModal));
