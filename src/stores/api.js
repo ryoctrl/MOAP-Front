@@ -9,7 +9,7 @@ const SERVICE_INFO_EP = API_HOST + 'api/info/inservice';
 const FETCH_HISTORY_EP = API_HOST + 'api/orders/history';
 const ACTIVATE_EP = API_HOST + 'api/user/activate';
 
-const QUEUE_HOST = 'https://moap-queue.mosin.jp/';
+const QUEUE_HOST = process.env.REACT_APP_QUEUE_HOST;
 const NEW_QUEUE_EP = QUEUE_HOST + 'queue/new';
 const UPDATE_ORDER_QUEUE_EP = QUEUE_HOST + 'queue/order';
 const UPDATE_PAYMENT_EP = QUEUE_HOST + 'queue/payment';
