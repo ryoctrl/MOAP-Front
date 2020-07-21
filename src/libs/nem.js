@@ -23,7 +23,7 @@ const host = new TransactionHttp(NEM_NODE_HOST);
 
 // nem node
 //const NEM_NODE_HOST = 'https://catapult-test.opening-line.jp:3001/';
-const NEM_NODE_HOST = 'https://nemp2p.mosin.jp';
+const NEM_NODE_HOST = process.env.REACT_APP_NEM_HOST;
 const host = new TransactionHttp(NEM_NODE_HOST);
 const accountHttp = new AccountHttp(NEM_NODE_HOST);
 
